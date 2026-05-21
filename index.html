@@ -445,7 +445,48 @@ const formations = {
     {top:"50%",left:"60%"},
     {top:"50%",left:"80%"},
     {top:"25%",left:"35%"},
-    {top:"25%",left:"65%"}
+    {top:"25%",left:"65%"},
+"352":[
+  {top:"90%",left:"50%"},
+  {top:"70%",left:"30%"},
+  {top:"70%",left:"50%"},
+  {top:"70%",left:"70%"},
+  {top:"50%",left:"15%"},
+  {top:"50%",left:"35%"},
+  {top:"50%",left:"50%"},
+  {top:"50%",left:"65%"},
+  {top:"50%",left:"85%"},
+  {top:"25%",left:"35%"},
+  {top:"25%",left:"65%"}
+],
+
+"532":[
+  {top:"90%",left:"50%"},
+  {top:"72%",left:"10%"},
+  {top:"72%",left:"30%"},
+  {top:"72%",left:"50%"},
+  {top:"72%",left:"70%"},
+  {top:"72%",left:"90%"},
+  {top:"50%",left:"30%"},
+  {top:"50%",left:"50%"},
+  {top:"50%",left:"70%"},
+  {top:"25%",left:"35%"},
+  {top:"25%",left:"65%"}
+],
+
+"451":[
+  {top:"90%",left:"50%"},
+  {top:"72%",left:"20%"},
+  {top:"72%",left:"40%"},
+  {top:"72%",left:"60%"},
+  {top:"72%",left:"80%"},
+  {top:"50%",left:"10%"},
+  {top:"50%",left:"30%"},
+  {top:"50%",left:"50%"},
+  {top:"50%",left:"70%"},
+  {top:"50%",left:"90%"},
+  {top:"25%",left:"50%"}
+]
   ]
 
 };
@@ -576,12 +617,41 @@ function renderSingleTeam(teamName){
 
   container.innerHTML = "";
 
-  const lines = [
-    [0],
-    [1,2,3,4],
-    [5,6,7],
-    [8,9,10]
-  ];
+  for(let index = 0; index < 11; index++){
+
+    const slot = document.createElement("div");
+
+    slot.className = "slot";
+
+    const pos = formations[currentFormation][index];
+
+    slot.style.top = pos.top;
+    slot.style.left = pos.left;
+
+    const player = teams[teamName][index];
+
+    if(player){
+
+      slot.classList.add("filled");
+
+      slot.innerHTML = `
+        ${player.name}<br>
+        #${player.number}
+      `;
+
+    }else{
+
+      slot.innerHTML = `+`;
+
+    }
+
+    slot.onclick = () => openModal(teamName,index);
+
+    container.appendChild(slot);
+
+  }
+
+}
 
   lines.forEach(lineIndexes => {
 
