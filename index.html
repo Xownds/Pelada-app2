@@ -139,7 +139,19 @@ button:hover{
   background:rgba(255,255,255,.2);
 }
 
-.field::after{.field .goal{
+.field::after{
+  content:"";
+  position:absolute;
+  width:150px;
+  height:150px;
+  border:3px solid rgba(255,255,255,.2);
+  border-radius:50%;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+}
+
+.field .goal{
   position:absolute;
   width:120px;
   height:8px;
@@ -380,7 +392,7 @@ button:hover{
   <div class="box bottom"></div>
 
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-  <h2>Time 1</h2>
+  <h2>Time 2</h2>
 
   <select id="formationSelect" onchange="changeFormation()">
     <option value="433">4-3-3</option>
@@ -416,7 +428,7 @@ let teams = {
   team2: Array(11).fill(null)
 };
 
-const formation = [const formations = {
+const formations = {
 
   "433":[
     {top:"90%",left:"50%"},
@@ -447,6 +459,8 @@ const formation = [const formations = {
   ]
 
 };
+
+let currentFormation = "433";
 
 let currentFormation = "433";
  
