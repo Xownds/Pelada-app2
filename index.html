@@ -124,6 +124,9 @@ button:hover{
   padding:10px;
   position:relative;
   overflow:hidden;
+
+  background-size:100% 100%;
+  box-shadow: inset 0 0 40px rgba(0,0,0,.5);
 }
 
 .field::before{
@@ -136,7 +139,39 @@ button:hover{
   background:rgba(255,255,255,.2);
 }
 
-.field::after{
+.field::after{.field .goal{
+  position:absolute;
+  width:120px;
+  height:8px;
+  background:white;
+  left:50%;
+  transform:translateX(-50%);
+}
+
+.field .goal.top{
+  top:5px;
+}
+
+.field .goal.bottom{
+  bottom:5px;
+}
+
+.field .box{
+  position:absolute;
+  width:180px;
+  height:80px;
+  border:3px solid rgba(255,255,255,.25);
+  left:50%;
+  transform:translateX(-50%);
+}
+
+.field .box.top{
+  top:0;
+}
+
+.field .box.bottom{
+  bottom:0;
+}
   content:"";
   position:absolute;
   width:150px;
@@ -168,20 +203,23 @@ button:hover{
   flex-wrap:wrap;
 }
 
-.slot{
-  width:80px;
-  height:80px;
-  border-radius:15px;
+.slot{z-index:10;
+  position:absolute;
+  width:70px;
+  height:70px;
+  border-radius:50%;
   border:2px dashed rgba(255,255,255,.3);
-  background:rgba(255,255,255,.05);
+  background:rgba(255,255,255,.08);
   display:flex;
   align-items:center;
   justify-content:center;
   text-align:center;
-  font-size:12px;
+  font-size:11px;
   padding:5px;
   cursor:pointer;
   transition:.2s;
+  transform:translate(-50%,-50%);
+  font-weight:bold;
 }
 
 .slot:hover{
@@ -311,7 +349,23 @@ button:hover{
 
 <div class="field">
 
-<h2>Time 1</h2>
+  <div class="goal top"></div>
+  <div class="goal bottom"></div>
+
+  <div class="box top"></div>
+  <div class="box bottom"></div>
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+  <h2>Time 1</h2>
+
+  <select id="formationSelect" onchange="changeFormation()">
+    <option value="433">4-3-3</option>
+    <option value="442">4-4-2</option>
+    <option value="352">3-5-2</option>
+    <option value="532">5-3-2</option>
+    <option value="451">4-5-1</option>
+  </select>
+</div>
 
 <div class="positions" id="team1"></div>
 
@@ -319,7 +373,23 @@ button:hover{
 
 <div class="field">
 
-<h2>Time 2</h2>
+  <div class="goal top"></div>
+  <div class="goal bottom"></div>
+
+  <div class="box top"></div>
+  <div class="box bottom"></div>
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+  <h2>Time 1</h2>
+
+  <select id="formationSelect" onchange="changeFormation()">
+    <option value="433">4-3-3</option>
+    <option value="442">4-4-2</option>
+    <option value="352">3-5-2</option>
+    <option value="532">5-3-2</option>
+    <option value="451">4-5-1</option>
+  </select>
+</div>
 
 <div class="positions" id="team2"></div>
 
@@ -346,18 +416,40 @@ let teams = {
   team2: Array(11).fill(null)
 };
 
-const formation = [
-  "Goleiro",
-  "Zagueiro",
-  "Zagueiro",
-  "Lateral",
-  "Lateral",
-  "Volante",
-  "Meia",
-  "Meia",
-  "Atacante",
-  "Atacante",
-  "Atacante"
+const formation = [const formations = {
+
+  "433":[
+    {top:"90%",left:"50%"},
+    {top:"72%",left:"20%"},
+    {top:"72%",left:"40%"},
+    {top:"72%",left:"60%"},
+    {top:"72%",left:"80%"},
+    {top:"50%",left:"30%"},
+    {top:"50%",left:"50%"},
+    {top:"50%",left:"70%"},
+    {top:"25%",left:"25%"},
+    {top:"20%",left:"50%"},
+    {top:"25%",left:"75%"}
+  ],
+
+  "442":[
+    {top:"90%",left:"50%"},
+    {top:"72%",left:"20%"},
+    {top:"72%",left:"40%"},
+    {top:"72%",left:"60%"},
+    {top:"72%",left:"80%"},
+    {top:"50%",left:"20%"},
+    {top:"50%",left:"40%"},
+    {top:"50%",left:"60%"},
+    {top:"50%",left:"80%"},
+    {top:"25%",left:"35%"},
+    {top:"25%",left:"65%"}
+  ]
+
+};
+
+let currentFormation = "433";
+ 
 ];
 
 let currentSlot = null;
@@ -502,7 +594,10 @@ function renderSingleTeam(teamName){
       const slot = document.createElement("div");
 
       slot.className = "slot";
+const pos = formations[currentFormation][index];
 
+slot.style.top = pos.top;
+slot.style.left = pos.left;
       const player = teams[teamName][index];
 
       if(player){
@@ -516,10 +611,9 @@ function renderSingleTeam(teamName){
 
       }else{
 
-        slot.innerHTML = `
-          +<br>
-          ${formation[index]}
-        `;
+       slot.innerHTML = `
+  +
+`;
 
       }
 
@@ -636,7 +730,14 @@ function drawTeams(){
   renderTeams();
 
 }
+function changeFormation(){
 
+  currentFormation =
+  document.getElementById("formationSelect").value;
+
+  renderTeams();
+
+}
 renderPlayers();
 renderTeams();
 </script>
