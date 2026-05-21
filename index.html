@@ -191,11 +191,9 @@ button:hover{
 }
 
 .positions{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
   position:relative;
-  z-index:2;
+  width:100%;
+  height:100%;
 }
 
 .line{
@@ -360,7 +358,7 @@ button:hover{
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
   <h2>Time 1</h2>
 
-  <select id="formationSelect" onchange="changeFormation()">
+<select id="formationSelect1" onchange="changeFormation('team1')">
     <option value="433">4-3-3</option>
     <option value="442">4-4-2</option>
     <option value="352">3-5-2</option>
@@ -383,8 +381,8 @@ button:hover{
 
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
   <h2>Time 2</h2>
-
-  <select id="formationSelect" onchange="changeFormation()">
+  
+<select id="formationSelect2" onchange="changeFormation('team2')">
     <option value="433">4-3-3</option>
     <option value="442">4-4-2</option>
     <option value="352">3-5-2</option>
@@ -490,7 +488,10 @@ const formations = {
 ]
 };
 
-let currentFormation = "433";
+let currentFormation = {
+  team1:"433",
+  team2:"433"
+};
  
 let currentSlot = null;
 
@@ -622,7 +623,8 @@ function renderSingleTeam(teamName){
 
     slot.className = "slot";
 
-    const pos = formations[currentFormation][index];
+  const pos =
+formations[currentFormation[teamName]][index];
 
     slot.style.top = pos.top;
     slot.style.left = pos.left;
@@ -754,14 +756,21 @@ function drawTeams(){
   renderTeams();
 
 }
-function changeFormation(){
+function changeFormation(team){
 
-  currentFormation =
-  document.getElementById("formationSelect").value;
+  const select =
+  document.getElementById(
+    team === "team1"
+    ? "formationSelect1"
+    : "formationSelect2"
+  );
 
-  renderTeams();
+  currentFormation[team] = select.value;
+
+  renderSingleTeam(team);
 
 }
+
 renderPlayers();
 renderTeams();
 </script>
