@@ -1,0 +1,8 @@
+{
+  "name": "Pelada App",
+  "short_name": "Pelada",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#07140d",
+  "theme_color": "#32ff7e"
+}
