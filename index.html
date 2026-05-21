@@ -446,6 +446,7 @@ const formations = {
     {top:"50%",left:"80%"},
     {top:"25%",left:"35%"},
     {top:"25%",left:"65%"},
+  ],  
 "352":[
   {top:"90%",left:"50%"},
   {top:"70%",left:"30%"},
@@ -653,52 +654,7 @@ function renderSingleTeam(teamName){
 
 }
 
-  lines.forEach(lineIndexes => {
-
-    const line = document.createElement("div");
-
-    line.className = "line";
-
-    lineIndexes.forEach(index => {
-
-      const slot = document.createElement("div");
-
-      slot.className = "slot";
-const pos = formations[currentFormation][index];
-
-slot.style.top = pos.top;
-slot.style.left = pos.left;
-      const player = teams[teamName][index];
-
-      if(player){
-
-        slot.classList.add("filled");
-
-        slot.innerHTML = `
-          ${player.name}<br>
-          #${player.number}
-        `;
-
-      }else{
-
-       slot.innerHTML = `
-  +
-`;
-
-      }
-
-      slot.onclick = () => openModal(teamName,index);
-
-      line.appendChild(slot);
-
-    });
-
-    container.appendChild(line);
-
-  });
-
-}
-
+ 
 function openModal(team,index){
 
   currentSlot = {team,index};
