@@ -27,11 +27,12 @@ linear-gradient(
 }
 
 h1{
+  #modeLabel{
   text-align:center;
-  margin-bottom:20px;
   color:#32ff7e;
+  margin-bottom:20px;
+  opacity:.8;
 }
-
 .container{
   max-width:1200px;
   margin:auto;
@@ -400,6 +401,9 @@ height:58px;
 <div class="container">
 
 <h1>⚽ Pelada App</h1>
+<h3 id="modeLabel">
+⚽ Modo Futebol
+</h3>
 <div class="tabs">
 
 <button onclick="showTab('teams')">
@@ -571,11 +575,24 @@ const maxPlayers = 22;
 
 let players = JSON.parse(localStorage.getItem("players")) || [];
 
-let teams = {
-  team1: [],
-  team2: []
+let teamsByMode = {
+
+  football:{
+    team1:[],
+    team2:[]
+  },
+
+  society:{
+    team1:[],
+    team2:[]
+  },
+
+  futsal:{
+    team1:[],
+    team2:[]
+  }
+
 };
- 
 const formationRoles = {
 
   "433":[
@@ -1032,8 +1049,8 @@ formationRoles[currentFormation[team]][index];
   modalPlayers.innerHTML = "";
 
   const usedIds = [
-    ...teams.team1,
-    ...teams.team2
+    ...teamsByMode[gameMode].team1,
+    ...teamsByMode[gameMode].team2
   ]
   .filter(Boolean)
   .map(p => p.id);
@@ -1090,10 +1107,10 @@ function clearTeams(){
  const totalPlayers =
 formations[currentFormation.team1].length;
 
-teams.team1 =
+teamsByMode[gameMode].team1 =
 Array(totalPlayers).fill(null);
 
-teams.team2 =
+teamsByMode[gameMode].team2 =
 Array(totalPlayers).fill(null);
   renderTeams();
 
