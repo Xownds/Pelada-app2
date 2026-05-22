@@ -529,7 +529,32 @@ height:58px;
 <div class="field" id="field3"
 style="display:none;">
 
+<div class="goal top"></div>
+<div class="goal bottom"></div>
+
+<div class="box top"></div>
+<div class="box bottom"></div>
+
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:10px;">
+
 <h2>Time 3</h2>
+
+<select id="formationSelect3"
+onchange="changeFormation('team3')">
+
+<option value="433">4-3-3</option>
+<option value="442">4-4-2</option>
+<option value="352">3-5-2</option>
+<option value="532">5-3-2</option>
+<option value="451">4-5-1</option>
+
+</select>
+
+</div>
 
 <div class="positions"
 id="team3"></div>
@@ -539,15 +564,38 @@ id="team3"></div>
 <div class="field" id="field4"
 style="display:none;">
 
+<div class="goal top"></div>
+<div class="goal bottom"></div>
+
+<div class="box top"></div>
+<div class="box bottom"></div>
+
+<div style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:10px;">
+
 <h2>Time 4</h2>
+
+<select id="formationSelect4"
+onchange="changeFormation('team4')">
+
+<option value="433">4-3-3</option>
+<option value="442">4-4-2</option>
+<option value="352">3-5-2</option>
+<option value="532">5-3-2</option>
+<option value="451">4-5-1</option>
+
+</select>
+
+</div>
 
 <div class="positions"
 id="team4"></div>
 
 </div>
-</div>
-
-
+  
 </div>
 <div class="tab-content"
 id="modesTab"
@@ -617,19 +665,25 @@ let players = JSON.parse(localStorage.getItem("players")) || [];
 let teamsByMode = {
 
   football:{
-    team1:[],
-    team2:[]
-  },
+  team1:[],
+  team2:[],
+  team3:[],
+  team4:[]
+},
 
   society:{
-    team1:[],
-    team2:[]
-  },
+  team1:[],
+  team2:[],
+  team3:[],
+  team4:[]
+},
 
   futsal:{
-    team1:[],
-    team2:[]
-  }
+   team1:[],
+  team2:[],
+  team3:[],
+  team4:[]
+},
 
 };
 const formationRoles = {
@@ -885,7 +939,9 @@ const formations = {
 
 let currentFormation = {
   team1:"433",
-  team2:"433"
+  team2:"433",
+  team3:"433",
+  team4:"433"
 };
  
 let currentSlot = null;
@@ -1278,12 +1334,13 @@ available[playerIndex];
 
 function changeFormation(team){
 
-  const select =
-  document.getElementById(
-    team === "team1"
-    ? "formationSelect1"
-    : "formationSelect2"
-  );
+const number =
+team.replace("team","");
+
+const select =
+document.getElementById(
+  `formationSelect${number}`
+);
 
   currentFormation[team] = select.value;
 
@@ -1357,57 +1414,60 @@ function setMode(mode){
   const formationsList =
   config.formations;
 
-  const select1 =
-  document.getElementById(
-    "formationSelect1"
-  );
+  for(
+    let i = 1;
+    i <= 4;
+    i++
+  ){
 
-  const select2 =
-  document.getElementById(
-    "formationSelect2"
-  );
-
-  select1.innerHTML = "";
-  select2.innerHTML = "";
-
-  formationsList.forEach(f => {
-
-    select1.innerHTML +=
-    `<option value="${f}">
-      ${f}
-    </option>`;
-
-    select2.innerHTML +=
-    `<option value="${f}">
-      ${f}
-    </option>`;
-
-  });
-
-  currentFormation.team1 =
-  formationsList[0];
-
-  currentFormation.team2 =
-  formationsList[0];
-const modeLabel =
+    const select =
 document.getElementById(
-  "modeLabel"
+  `formationSelect${i}`
 );
 
-if(mode === "football"){
-  modeLabel.innerHTML =
-  "⚽ Modo Futebol";
-}
+    if(!select) continue;
 
-if(mode === "society"){
-  modeLabel.innerHTML =
-  "🏟️ Modo Society";
-}
+    select.innerHTML = "";
 
-if(mode === "futsal"){
-  modeLabel.innerHTML =
-  "🔥 Modo Futsal";
-}
+    formationsList.forEach(f => {
+
+      select.innerHTML += `
+        <option value="${f}">
+          ${f}
+        </option>
+      `;
+
+    });
+
+    currentFormation[
+      `team${i}`
+    ] = formationsList[0];
+
+    select.value =
+    formationsList[0];
+
+  }
+
+  const modeLabel =
+  document.getElementById(
+    "modeLabel"
+  );
+
+  if(mode === "football"){
+    modeLabel.innerHTML =
+    "⚽ Modo Futebol";
+  }
+
+  if(mode === "society"){
+    modeLabel.innerHTML =
+    "🏟️ Modo Society";
+  }
+
+  if(mode === "futsal"){
+    modeLabel.innerHTML =
+    "🔥 Modo Futsal";
+  }
+
   clearTeams();
 
   renderTeams();
