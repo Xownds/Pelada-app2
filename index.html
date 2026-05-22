@@ -462,7 +462,10 @@ height:58px;
 </div>
 
 </div>
-<div class="tab-content" id="playersTab">
+  
+<div class="tab-content"
+id="playersTab"
+style="display:none">
   
 <div class="card">
 
@@ -474,7 +477,9 @@ height:58px;
 </div>
   
  </div>
-<div class="tab-content" id="teamsTab">
+<div class="tab-content"
+id="teamsTab"
+style="display:block">
 
 <div class="field-container">
  
@@ -663,7 +668,12 @@ const maxPlayers = 50;
 
 let players = JSON.parse(localStorage.getItem("players")) || [];
 
-let teamsByMode = {
+let teamsByMode =
+JSON.parse(
+  localStorage.getItem(
+    "teamsByMode"
+  )
+) || {
 
   football:{
   team1:[],
@@ -950,7 +960,12 @@ let currentSlot = null;
 function savePlayers(){
   localStorage.setItem("players", JSON.stringify(players));
 }
-
+function saveTeams(){
+  localStorage.setItem(
+    "teamsByMode",
+    JSON.stringify(teamsByMode)
+  );
+}
 function updateCounter(){
 
   document.getElementById(
@@ -972,10 +987,23 @@ function addPlayer(){
   const number = document.getElementById("number").value.trim();
   const position = document.getElementById("position").value;
 
-  if(!name || !number){
-    alert("Preencha os campos.");
-    return;
-  }
+ if(!name || !number){
+
+  alert("Preencha os campos.");
+
+  return;
+
+}
+
+if(number < 1 || number > 99){
+
+  alert(
+    "Número inválido"
+  );
+
+  return;
+
+}
 
 players.push({
   id: Date.now(),
@@ -1130,8 +1158,10 @@ teamsByMode[gameMode][teamName][index];
 
     }else{
 
-    const role =
-formationRoles[currentFormation[teamName]][index];
+const role =
+formationRoles[
+  currentFormation[teamName]
+][index];
 
 slot.innerHTML = `
   +<br>
@@ -1150,8 +1180,6 @@ slot.innerHTML = `
  
 function openModal(team,index){
   
-const role =
-formationRoles[currentFormation[team]][index];
   currentSlot = {team,index};
 
   const modal = document.getElementById("modal");
@@ -1196,15 +1224,16 @@ ${player.name}
 
     div.onclick = () => {
 
-      teamsByMode[gameMode][team][index] =
-player;
+  teamsByMode[gameMode][team][index] =
+  player;
 
-      renderTeams();
+  saveTeams();
 
-      closeModal();
+  renderTeams();
 
-    };
+  closeModal();
 
+};
     modalPlayers.appendChild(div);
 
   });
@@ -1247,7 +1276,7 @@ function clearTeams(){
     .fill(null);
 
   }
-
+saveTeams();
   renderTeams();
 
 }
@@ -1303,8 +1332,12 @@ if(players.length < minPlayers){
     const formation =
     currentFormation[team];
 
-    const roles =
-    formationRoles[formation];
+  const roles =
+formationRoles[formation]
+.slice(
+  0,
+  modeConfig[gameMode].players
+);
 
     for(let i = 0; i < roles.length; i++){
 
@@ -1327,7 +1360,7 @@ available[playerIndex];
     }
 
   }
-
+saveTeams();
   renderTeams();
 
 }
@@ -1384,9 +1417,16 @@ function showTab(tab){
     tab + "Tab"
   ).style.display = "block";
 
-}
-let gameMode = "football";
-let totalTeams = 2;
+}let gameMode =
+localStorage.getItem(
+  "gameMode"
+) || "football";
+let totalTeams =
+parseInt(
+  localStorage.getItem(
+    "totalTeams"
+  )
+) || 2;
 const modeConfig = {
 
   football:{
@@ -1408,7 +1448,10 @@ const modeConfig = {
 function setMode(mode){
 
   gameMode = mode;
-
+localStorage.setItem(
+  "gameMode",
+  mode
+);
   const config =
   modeConfig[mode];
 
@@ -1469,14 +1512,16 @@ document.getElementById(
     "🔥 Modo Futsal";
   }
 
-  clearTeams();
-
-  renderTeams();
+ renderTeams();
 
 }
   function setTeamsAmount(amount){
 
   totalTeams = amount;
+    localStorage.setItem(
+  "totalTeams",
+  amount
+);
 document.getElementById(
   "field3"
 ).style.display =
@@ -1510,8 +1555,9 @@ amount >= 4
   }
 
 }
+setTeamsAmount(totalTeams);
+setMode(gameMode);
 renderPlayers();
-renderTeams();
 </script>
 
 </body>
