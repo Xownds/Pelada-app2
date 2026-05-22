@@ -684,6 +684,8 @@ ${player.name}
 onclick="toggleCaptain(${player.id})">
 🧠
 </button>
+      <button class="small-btn"
+
         <button class="small-btn edit"
         onclick="editPlayer(${player.id})">
         Editar
@@ -764,15 +766,15 @@ formations[currentFormation[teamName]][index];
 
       slot.classList.add("filled");
 
-      slot.innerHTML = `
+    slot.innerHTML = `
 <div class="shirt ${player.captain ? 'captain-shirt' : ''}">
-    ${player.number}
-  </div>
+  ${player.number}
+</div>
 
-  <div class="player-name">
-    ${player.captain ? "🧠 " : ""}
-    ${player.name}
-  </div>
+<div class="player-name">
+  ${player.captain ? "🧠 " : ""}
+  ${player.name}
+</div>
 `;
 
     }else{
