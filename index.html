@@ -27,7 +27,12 @@ linear-gradient(
 }
 
 h1{
-  #modeLabel{
+  text-align:center;
+  color:#32ff7e;
+  margin-bottom:10px;
+}
+
+#modeLabel{
   text-align:center;
   color:#32ff7e;
   margin-bottom:20px;
@@ -1000,7 +1005,8 @@ formations[currentFormation[teamName]][index];
     slot.style.top = pos.top;
     slot.style.left = pos.left;
 
-    const player = teams[teamName][index];
+   const player =
+teamsByMode[gameMode][teamName][index];
 
     if(player){
 
@@ -1072,7 +1078,8 @@ ${player.name}
 
     div.onclick = () => {
 
-      teams[team][index] = player;
+      teamsByMode[gameMode][team][index] =
+player;
 
       renderTeams();
 
@@ -1129,6 +1136,25 @@ function shuffle(array){
 }
 
 function drawTeams(){
+  let minPlayers = 22;
+
+if(gameMode === "society"){
+  minPlayers = 14;
+}
+
+if(gameMode === "futsal"){
+  minPlayers = 10;
+}
+
+if(players.length < minPlayers){
+
+  alert(
+    `Você precisa de no mínimo ${minPlayers} jogadores`
+  );
+
+  return;
+
+}
 
   clearTeams();
 
@@ -1155,8 +1181,8 @@ function drawTeams(){
 
       if(playerIndex !== -1){
 
-        teams[team][i] =
-        available[playerIndex];
+ teamsByMode[gameMode][team][i] =
+available[playerIndex];
 
         available.splice(playerIndex,1);
 
@@ -1283,7 +1309,25 @@ function setMode(mode){
 
   currentFormation.team2 =
   formationsList[0];
+const modeLabel =
+document.getElementById(
+  "modeLabel"
+);
 
+if(mode === "football"){
+  modeLabel.innerHTML =
+  "⚽ Modo Futebol";
+}
+
+if(mode === "society"){
+  modeLabel.innerHTML =
+  "🏟️ Modo Society";
+}
+
+if(mode === "futsal"){
+  modeLabel.innerHTML =
+  "🔥 Modo Futsal";
+}
   clearTeams();
 
   renderTeams();
