@@ -769,8 +769,10 @@ const formations = {
   {top:"50%",left:"50%"},
   {top:"50%",left:"70%"},
   {top:"50%",left:"90%"},
-  {top:"25%",left:"50%"}
-]"322":[
+ {top:"25%",left:"50%"}
+],
+
+"322":[
 {top:"90%",left:"50%"},
 {top:"65%",left:"35%"},
 {top:"65%",left:"65%"},
@@ -1085,9 +1087,14 @@ window.onclick = function(e){
 
 function clearTeams(){
 
-  teams.team1 = Array(11).fill(null);
-  teams.team2 = Array(11).fill(null);
+ const totalPlayers =
+formations[currentFormation.team1].length;
 
+teams.team1 =
+Array(totalPlayers).fill(null);
+
+teams.team2 =
+Array(totalPlayers).fill(null);
   renderTeams();
 
 }
@@ -1221,7 +1228,48 @@ function setMode(mode){
 
   gameMode = mode;
 
-  alert("Modo alterado para: " + mode);
+  const config =
+  modeConfig[mode];
+
+  const formationsList =
+  config.formations;
+
+  const select1 =
+  document.getElementById(
+    "formationSelect1"
+  );
+
+  const select2 =
+  document.getElementById(
+    "formationSelect2"
+  );
+
+  select1.innerHTML = "";
+  select2.innerHTML = "";
+
+  formationsList.forEach(f => {
+
+    select1.innerHTML +=
+    `<option value="${f}">
+      ${f}
+    </option>`;
+
+    select2.innerHTML +=
+    `<option value="${f}">
+      ${f}
+    </option>`;
+
+  });
+
+  currentFormation.team1 =
+  formationsList[0];
+
+  currentFormation.team2 =
+  formationsList[0];
+
+  clearTeams();
+
+  renderTeams();
 
 }
   function resetApp(){
