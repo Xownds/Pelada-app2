@@ -449,7 +449,7 @@ height:58px;
 </div>
 
 <div class="counter" id="counter">
-0 / 22 jogadores
+0 / 50 jogadores
 </div>
 
 </div>
@@ -523,10 +523,30 @@ height:58px;
 </div>
 
 <div class="positions" id="team2"></div>
+  
+</div>
+
+<div class="field" id="field3"
+style="display:none;">
+
+<h2>Time 3</h2>
+
+<div class="positions"
+id="team3"></div>
 
 </div>
 
+<div class="field" id="field4"
+style="display:none;">
+
+<h2>Time 4</h2>
+
+<div class="positions"
+id="team4"></div>
+
 </div>
+</div>
+
 
 </div>
 <div class="tab-content"
@@ -536,7 +556,21 @@ style="display:none">
 <div class="card">
 
 <h2>🎮 Modos</h2>
+<h3 style="margin-top:20px;">
+👥 Quantidade de Times
+</h3>
 
+<button onclick="setTeamsAmount(2)">
+2 Times
+</button>
+
+<button onclick="setTeamsAmount(3)">
+3 Times
+</button>
+
+<button onclick="setTeamsAmount(4)">
+4 Times
+</button>
 <button onclick="setMode('football')">
 ⚽ Futebol 11
 </button>
@@ -576,7 +610,7 @@ style="display:none">
 </div>
 
 <script>
-const maxPlayers = 22;
+const maxPlayers = 50;
 
 let players = JSON.parse(localStorage.getItem("players")) || [];
 
@@ -861,14 +895,19 @@ function savePlayers(){
 }
 
 function updateCounter(){
-  document.getElementById("counter").innerText =
-  `${players.length} / 22 jogadores`;
+
+  document.getElementById(
+    "counter"
+  ).innerText =
+
+  `${players.length} / ${maxPlayers} jogadores`;
+
 }
 
 function addPlayer(){
 
   if(players.length >= maxPlayers){
-    alert("Limite máximo de 22 jogadores.");
+    alert("Limite máximo de jogadores atingido.");
     return;
   }
 
@@ -977,8 +1016,17 @@ function editPlayer(id){
 
 function renderTeams(){
 
-  renderSingleTeam("team1");
-  renderSingleTeam("team2");
+  for(
+    let i = 1;
+    i <= totalTeams;
+    i++
+  ){
+
+    renderSingleTeam(
+      `team${i}`
+    );
+
+  }
 
 }
 
@@ -1054,12 +1102,25 @@ formationRoles[currentFormation[team]][index];
 
   modalPlayers.innerHTML = "";
 
-  const usedIds = [
-    ...teamsByMode[gameMode].team1,
-    ...teamsByMode[gameMode].team2
-  ]
-  .filter(Boolean)
-  .map(p => p.id);
+  let usedPlayers = [];
+
+for(
+  let i = 1;
+  i <= totalTeams;
+  i++
+){
+
+  usedPlayers.push(
+    ...teamsByMode[gameMode]
+    [`team${i}`]
+  );
+
+}
+
+const usedIds =
+usedPlayers
+.filter(Boolean)
+.map(p => p.id);
 
   players.forEach(player => {
 
@@ -1111,14 +1172,25 @@ window.onclick = function(e){
 
 function clearTeams(){
 
- const totalPlayers =
-formations[currentFormation.team1].length;
+  const totalPlayers =
+  formations[
+    currentFormation.team1
+  ].length;
 
-teamsByMode[gameMode].team1 =
-Array(totalPlayers).fill(null);
+  for(
+    let i = 1;
+    i <= totalTeams;
+    i++
+  ){
 
-teamsByMode[gameMode].team2 =
-Array(totalPlayers).fill(null);
+    teamsByMode[gameMode]
+    [`team${i}`] =
+
+    Array(totalPlayers)
+    .fill(null);
+
+  }
+
   renderTeams();
 
 }
@@ -1162,7 +1234,14 @@ if(players.length < minPlayers){
 
   shuffle(available);
 
-  ["team1","team2"].forEach(team => {
+ for(
+  let t = 1;
+  t <= totalTeams;
+  t++
+){
+
+  const team =
+  `team${t}`;
 
     const formation =
     currentFormation[team];
@@ -1190,7 +1269,7 @@ available[playerIndex];
 
     }
 
-  });
+  }
 
   renderTeams();
 
@@ -1249,6 +1328,7 @@ function showTab(tab){
 
 }
 let gameMode = "football";
+let totalTeams = 2;
 const modeConfig = {
 
   football:{
@@ -1331,6 +1411,27 @@ if(mode === "futsal"){
   clearTeams();
 
   renderTeams();
+
+}
+  function setTeamsAmount(amount){
+
+  totalTeams = amount;
+document.getElementById(
+  "field3"
+).style.display =
+amount >= 3
+? "block"
+: "none";
+
+document.getElementById(
+  "field4"
+).style.display =
+amount >= 4
+? "block"
+: "none";
+  alert(
+    `${amount} times ativados`
+  );
 
 }
   function resetApp(){
