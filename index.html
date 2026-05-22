@@ -131,7 +131,7 @@ transparent 1px
 );
 
 background-size:100% 40px;
-  background:#0b2b16;
+ background-color:#0b2b16;
   border:3px solid #32ff7e;
   border-radius:20px;
   min-height:650px;
@@ -223,10 +223,7 @@ flex-direction:column;
 gap:2px;
 
 transition:
-top .35s ease,
-left .35s ease,
-transform .2s,
-background .2s;z-index:10;
+all .45s cubic-bezier(.2,.8,.2,1);z-index:10;
   position:absolute;
  width:58px;
 height:58px;
@@ -240,7 +237,6 @@ height:58px;
   font-size:11px;
   padding:5px;
   cursor:pointer;
-  transition:.2s;
   transform:translate(-50%,-50%);
   font-weight:bold;
 }
@@ -256,29 +252,77 @@ height:58px;
   border:none;
   font-weight:bold;
 }
+.slot.filled:hover{
+  transform:
+  translate(-50%,-50%)
+  scale(1.12);
 
+  z-index:999;
+}
 .shirt{
-  width:38px;
-  height:32px;
-  background:#32ff7e;
-  color:black;
-  font-weight:bold;
-  border-radius:8px 8px 12px 12px;
+  width:42px;
+  height:46px;
+
+  background:
+  linear-gradient(
+    180deg,
+    #49ff93,
+    #19c963
+  );
+
+  border-radius:
+  10px 10px 14px 14px;
+
+  position:relative;
+
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:14px;
-  box-shadow:0 2px 10px rgba(0,0,0,.4);
+
+  color:white;
+  font-weight:900;
+  font-size:15px;
+
+  box-shadow:
+  0 4px 15px rgba(0,0,0,.45);
+
+  border:
+  2px solid rgba(255,255,255,.15);
+
+  overflow:hidden;
+}.shirt::before,
+.shirt::after{
+  content:"";
+  position:absolute;
+  width:12px;
+  height:14px;
+  background:inherit;
+  top:4px;
+  border-radius:5px;
+}
+
+.shirt::before{
+  left:-6px;
+}
+
+.shirt::after{
+  right:-6px;
 }
 .captain-shirt{
-  border:2px solid gold;
+  box-shadow:
+  0 0 20px rgba(255,215,0,.95),
+  0 0 40px rgba(255,215,0,.45);
+
+  transform:scale(1.12);
 }
 .player-name{
-  font-size:8px;
-  max-width:55px;
+  font-size:9px;
+  font-weight:700;
+  max-width:70px;
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
+  text-shadow:0 2px 5px rgba(0,0,0,.5);
 }
   
 .top-buttons{
@@ -680,16 +724,16 @@ ${player.name}
       </div>
 
       <div class="player-actions">
-      <button class="small-btn"
+
+<button class="small-btn"
 onclick="toggleCaptain(${player.id})">
 🧠
 </button>
-      <button class="small-btn"
 
-        <button class="small-btn edit"
-        onclick="editPlayer(${player.id})">
-        Editar
-        </button>
+<button class="small-btn edit"
+onclick="editPlayer(${player.id})">
+Editar
+</button>
 
         <button class="small-btn delete"
         onclick="deletePlayer(${player.id})">
@@ -886,23 +930,47 @@ function shuffle(array){
 
 function drawTeams(){
 
-  if(players.length < 22){
-    alert("Cadastre 22 jogadores.");
-    return;
-  }
-
   clearTeams();
 
-  const shuffled = [...players];
+  const available = [...players];
 
-  shuffle(shuffled);
+  shuffle(available);
 
-  teams.team1 = shuffled.slice(0,11);
-  teams.team2 = shuffled.slice(11,22);
+  ["team1","team2"].forEach(team => {
+
+    const formation =
+    currentFormation[team];
+
+    const roles =
+    formationRoles[formation];
+
+    for(let i = 0; i < roles.length; i++){
+
+      const role = roles[i];
+
+      const playerIndex =
+      available.findIndex(
+        p => p.position === role
+      );
+
+      if(playerIndex !== -1){
+
+        teams[team][i] =
+        available[playerIndex];
+
+        available.splice(playerIndex,1);
+
+      }
+
+    }
+
+  });
 
   renderTeams();
 
 }
+
+
 function changeFormation(team){
 
   const select =
