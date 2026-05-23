@@ -597,6 +597,16 @@ id="team4"></div>
 </div>
 
 </div>
+<div class="card">
+
+<h2>🪑 Reservas</h2>
+
+<div
+class="players-list"
+id="reservesList">
+</div>
+
+</div>
 <div class="tab-content"
 id="modesTab"
 style="display:none">
@@ -947,7 +957,7 @@ let currentFormation = {
 };
  
 let currentSlot = null;
-
+let reserves = [];
 function savePlayers(){
   localStorage.setItem("players", JSON.stringify(players));
 }
@@ -1039,10 +1049,37 @@ Editar
 
 function deletePlayer(id){
 
-  players = players.filter(p => p.id !== id);
+  players = players.filter(
+    p => p.id !== id
+  );
+
+  Object.keys(teamsByMode)
+  .forEach(mode => {
+
+    Object.keys(teamsByMode[mode])
+    .forEach(team => {
+
+      teamsByMode[mode][team] =
+      teamsByMode[mode][team]
+      .map(player => {
+
+        if(player && player.id === id){
+          return null;
+        }
+
+        return player;
+
+      });
+
+    });
+
+  });
 
   savePlayers();
+
   renderPlayers();
+
+  renderTeams();
 
 }
 
@@ -1137,7 +1174,46 @@ slot.innerHTML = `
 
 }
 
- 
+function renderReserves(){
+
+  const list =
+  document.getElementById(
+    "reservesList"
+  );
+
+  list.innerHTML = "";
+
+  reserves.forEach(player => {
+
+    const div =
+    document.createElement("div");
+
+    div.className =
+    "player-card";
+
+    div.innerHTML = `
+      <div class="player-info">
+
+        <strong>
+          ${player.name}
+        </strong>
+
+        <span>
+          Camisa ${player.number}
+        </span>
+
+        <span>
+          ${player.position}
+        </span>
+
+      </div>
+    `;
+
+    list.appendChild(div);
+
+  });
+
+}
 function openModal(team,index){
   
 const role =
@@ -1231,7 +1307,9 @@ function clearTeams(){
     Array(totalPlayers).fill(null);
 
   }
+reserves = [];
 
+renderReserves();
   renderTeams();
 
 }
@@ -1323,7 +1401,13 @@ teams.forEach(team => {
 
   });
 
-  renderTeams();
+
+reserves = available;
+
+renderTeams();
+
+renderReserves();
+
 
 }
 
