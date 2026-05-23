@@ -957,9 +957,126 @@ let currentFormation = {
 };
  
 let currentSlot = null;
+let gameMode = "football";
+let totalTeams = 2;
 let reserves = [];
+  const teamColors = {
+
+  team1:{
+    primary:"#32ff7e",
+    secondary:"#19c963"
+  },
+
+  team2:{
+    primary:"#4da6ff",
+    secondary:"#1f7ae0"
+  },
+
+  team3:{
+    primary:"#ff5252",
+    secondary:"#d63031"
+  },
+
+  team4:{
+    primary:"#ffd32a",
+    secondary:"#e0b400"
+  }
+
+};
+  const savedTeams =
+localStorage.getItem(
+  "teamsByMode"
+);
+
+if(savedTeams){
+
+  teamsByMode =
+  JSON.parse(savedTeams);
+
+}
+
+const savedReserves =
+localStorage.getItem(
+  "reserves"
+);
+
+if(savedReserves){
+
+  reserves =
+  JSON.parse(savedReserves);
+
+}
+
+const savedFormation =
+localStorage.getItem(
+  "currentFormation"
+);
+
+if(savedFormation){
+
+  currentFormation =
+  JSON.parse(savedFormation);
+
+}
+
+const savedMode =
+localStorage.getItem(
+  "gameMode"
+);
+
+if(savedMode){
+
+  gameMode = savedMode;
+
+}
+
+const savedTotalTeams =
+localStorage.getItem(
+  "totalTeams"
+);
+
+if(savedTotalTeams){
+
+  totalTeams =
+  Number(savedTotalTeams);
+
+}
+function saveTeams(){
+
+  localStorage.setItem(
+    "teamsByMode",
+    JSON.stringify(teamsByMode)
+  );
+
+  localStorage.setItem(
+    "reserves",
+    JSON.stringify(reserves)
+  );
+
+  localStorage.setItem(
+    "currentFormation",
+    JSON.stringify(currentFormation)
+  );
+
+  localStorage.setItem(
+    "gameMode",
+    gameMode
+  );
+
+  localStorage.setItem(
+    "totalTeams",
+    totalTeams
+  );
+
+}
+
 function savePlayers(){
-  localStorage.setItem("players", JSON.stringify(players));
+
+  localStorage.setItem(
+    "players",
+    JSON.stringify(players)
+  );
+
 }
 
 function updateCounter(){
@@ -1144,9 +1261,24 @@ teamsByMode[gameMode][teamName][index];
 
       slot.classList.add("filled");
 
-    slot.innerHTML = `
-<div class="shirt ${player.captain ? 'captain-shirt' : ''}">
-  ${player.number}
+    const colors =
+teamColors[teamName];
+
+slot.innerHTML = `
+<div
+class="shirt ${player.captain ? 'captain-shirt' : ''}"
+
+style="
+background:
+linear-gradient(
+180deg,
+${colors.primary},
+${colors.secondary}
+);
+">
+
+${player.number}
+
 </div>
 
 <div class="player-name">
@@ -1393,6 +1525,7 @@ reserves = [];
 
 renderReserves();
   renderTeams();
+  saveTeams();
 
 }
 
@@ -1487,7 +1620,7 @@ teams.forEach(team => {
 reserves = available;
 
 renderTeams();
-
+saveTeams();
 renderReserves();
 
 
@@ -1547,8 +1680,7 @@ function showTab(tab){
   ).style.display = "block";
 
 }
-let gameMode = "football";
-let totalTeams = 2;
+
 const modeConfig = {
 
   football:{
@@ -1629,6 +1761,7 @@ if(mode === "futsal"){
   clearTeams();
 
   renderTeams();
+  saveTeams();
 
 }
 function setTeamsAmount(amount){
