@@ -1255,7 +1255,9 @@ function updateCounter(){
 function addPlayer(){
 
   if(players.length >= maxPlayers){
-    alert(`Limite máximo de ${maxPlayers} jogadores.`);
+    showWarning(
+`Limite máximo de ${maxPlayers} jogadores.`
+);
     return;
   }
 
@@ -1264,7 +1266,7 @@ function addPlayer(){
   const position = document.getElementById("position").value;
 
   if(!name || !number){
-    alert("Preencha os campos.");
+    showWarning("Preencha os campos.");
     return;
   }
 
@@ -1519,7 +1521,7 @@ ${player.position}
 
 <button
 class="small-btn"
-onclick="alert('Clique em um jogador do campo para substituir')">
+onclick="showWarning('Clique em um jogador do campo para substituir')">
 
 ➕ Colocar
 
@@ -1733,11 +1735,14 @@ playersPerTeam * totalTeams;
 
 if(players.length < minPlayers){
 
-  alert(
-    `Você precisa de no mínimo ${minPlayers} jogadores`
-  );
+showWarning(
+`Você precisa de no mínimo ${minPlayers} jogadores`
+);
 
-  return;
+document.body.style.pointerEvents =
+"auto";
+
+return;
 
 }
 
@@ -1964,10 +1969,9 @@ function setTeamsAmount(amount){
   ? "block"
   : "none";
 
-  alert(
-    `${amount} times ativados`
-  );
-
+  showWarning(
+`${amount} times ativados`
+);
 }
  function resetApp(){
 
@@ -2007,6 +2011,28 @@ renderReserves();
 closeResetModal();
 
 }
+function showWarning(text){
+
+document
+.getElementById("warningText")
+.innerText = text;
+
+document
+.getElementById("warningModal")
+.style.display = "flex";
+
+}
+
+function closeWarningModal(){
+
+document
+.getElementById("warningModal")
+.style.display = "none";
+
+document.body.style.pointerEvents =
+"auto";
+
+}
 showTab("teams");
 
 renderPlayers();
@@ -2036,6 +2062,31 @@ Cancelar
 <button class="confirm-btn"
 onclick="confirmReset()">
 Resetar
+</button>
+
+</div>
+
+</div>
+
+</div>
+<div id="warningModal" class="modal-overlay">
+
+<div class="modal-box">
+
+<h2>⚠️ Aviso</h2>
+
+<p id="warningText">
+Mensagem
+</p>
+
+<div class="modal-buttons">
+
+<button
+class="confirm-btn"
+onclick="closeWarningModal()">
+
+OK
+
 </button>
 
 </div>
