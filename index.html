@@ -1213,7 +1213,7 @@ ${player.position}
 
 <button
 class="small-btn"
-onclick="addReserveToField(${player.id})">
+onclick="alert('Clique em um jogador do campo para substituir')">
 
 ➕ Colocar
 
@@ -1228,65 +1228,7 @@ list.appendChild(div);
 });
 
 }
-
-function addReserveToField(id){
-  const emptySlots = [];
-
-  for(let i = 1; i <= totalTeams; i++){
-
-    const team =
-    "team" + i;
-
-    const teamArray =
-    teamsByMode[gameMode][team];
-
-    for(let j = 0; j < teamArray.length; j++){
-
-      if(!teamArray[j]){
-
-        emptySlots.push({
-          team,
-          index:j
-        });
-
-      }
-
-    }
-
-  }
-
-  if(emptySlots.length === 0){
-
-    alert(
-      "Não há slots vazios"
-    );
-
-    return;
-
-  }
-
-  const slot =
-  emptySlots[0];
-
-  const player =
-  reserves.find(
-    p => p.id === id
-  );
-
-  teamsByMode[gameMode]
-  [slot.team]
-  [slot.index] = player;
-
-  reserves =
-  reserves.filter(
-    p => p.id !== id
-  );
-
-  renderTeams();
-
-  renderReserves();
-
-}                   
+  
 function openModal(team,index){
   
 const role =
@@ -1352,7 +1294,69 @@ player;
     modalPlayers.appendChild(div);
 
   });
+if(reserves.length > 0){
 
+  const title =
+  document.createElement("h3");
+
+  title.style.marginTop = "20px";
+
+  title.innerText =
+  "🪑 Reservas";
+
+  modalPlayers.appendChild(title);
+
+  reserves.forEach(reserve => {
+
+    const div =
+    document.createElement("div");
+
+    div.className =
+    "modal-player";
+
+    div.innerHTML = `
+      <strong>
+        ${reserve.name}
+      </strong><br>
+
+      Camisa ${reserve.number}
+      •
+      ${reserve.position}
+    `;
+
+    div.onclick = () => {
+
+      const oldPlayer =
+      teamsByMode[gameMode]
+      [team][index];
+
+      if(oldPlayer){
+
+        reserves.push(oldPlayer);
+
+      }
+
+      teamsByMode[gameMode]
+      [team][index] = reserve;
+
+      reserves =
+      reserves.filter(
+        r => r.id !== reserve.id
+      );
+
+      renderTeams();
+
+      renderReserves();
+
+      closeModal();
+
+    };
+
+    modalPlayers.appendChild(div);
+
+  });
+
+}
   modal.style.display = "flex";
 
 }
