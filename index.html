@@ -1149,16 +1149,29 @@ formationRoles[currentFormation[team]][index];
 
   modalPlayers.innerHTML = "";
 
-  const usedIds = [
-    ...teamsByMode[gameMode].team1,
-    ...teamsByMode[gameMode].team2
-  ]
-  .filter(Boolean)
-  .map(p => p.id);
+  const usedIds = [];
+
+for(let i = 1; i <= totalTeams; i++){
+
+  const teamPlayers =
+  teamsByMode[gameMode][
+    "team" + i
+  ];
+
+  usedIds.push(
+    ...teamPlayers
+  );
+
+}
+
+const finalUsedIds =
+usedIds
+.filter(Boolean)
+.map(p => p.id);
 
   players.forEach(player => {
 
-    if(usedIds.includes(player.id)) return;
+    if(finalUsedIds.includes(player.id)) return;
     const div = document.createElement("div");
 
     div.className = "modal-player";
@@ -1398,38 +1411,36 @@ function setMode(mode){
   const formationsList =
   config.formations;
 
-  const select1 =
-  document.getElementById(
-    "formationSelect1"
-  );
+  const selects = [
 
-  const select2 =
-  document.getElementById(
-    "formationSelect2"
-  );
+document.getElementById("formationSelect1"),
+document.getElementById("formationSelect2"),
+document.getElementById("formationSelect3"),
+document.getElementById("formationSelect4")
 
-  select1.innerHTML = "";
-  select2.innerHTML = "";
+];
+
+selects.forEach(select => {
+
+  select.innerHTML = "";
 
   formationsList.forEach(f => {
-
-    select1.innerHTML +=
-    `<option value="${f}">
-      ${f}
-    </option>`;
-
-    select2.innerHTML +=
-    `<option value="${f}">
+    select.innerHTML += `
+    <option value="${f}">
       ${f}
     </option>`;
 
   });
 
-  currentFormation.team1 =
-  formationsList[0];
+});
 
-  currentFormation.team2 =
-  formationsList[0];
+for(let i = 1; i <= 4; i++){
+
+  currentFormation[
+    "team" + i
+  ] = formationsList[0];
+
+}
 const modeLabel =
 document.getElementById(
   "modeLabel"
