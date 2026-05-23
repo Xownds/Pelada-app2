@@ -1206,14 +1206,19 @@ window.onclick = function(e){
 
 function clearTeams(){
 
- const totalPlayers =
-formations[currentFormation.team1].length;
+  for(let i = 1; i <= 4; i++){
 
-teamsByMode[gameMode].team1 =
-Array(totalPlayers).fill(null);
+    const team =
+    "team" + i;
 
-teamsByMode[gameMode].team2 =
-Array(totalPlayers).fill(null);
+    const totalPlayers =
+    formations[currentFormation[team]].length;
+
+    teamsByMode[gameMode][team] =
+    Array(totalPlayers).fill(null);
+
+  }
+
   renderTeams();
 
 }
@@ -1231,15 +1236,18 @@ function shuffle(array){
 }
 
 function drawTeams(){
-  let minPlayers = 22;
+  let playersPerTeam = 11;
 
 if(gameMode === "society"){
-  minPlayers = 14;
+  playersPerTeam = 7;
 }
 
 if(gameMode === "futsal"){
-  minPlayers = 10;
+  playersPerTeam = 5;
 }
+
+let minPlayers =
+playersPerTeam * totalTeams;
 
 if(players.length < minPlayers){
 
@@ -1257,7 +1265,15 @@ if(players.length < minPlayers){
 
   shuffle(available);
 
-  ["team1","team2"].forEach(team => {
+  const teams = [];
+
+for(let i = 1; i <= totalTeams; i++){
+
+  teams.push("team" + i);
+
+}
+
+teams.forEach(team => {
 
     const formation =
     currentFormation[team];
@@ -1274,14 +1290,21 @@ if(players.length < minPlayers){
         p => p.position === role
       );
 
-      if(playerIndex !== -1){
+    if(playerIndex !== -1){
 
- teamsByMode[gameMode][team][i] =
-available[playerIndex];
+  teamsByMode[gameMode][team][i] =
+  available[playerIndex];
 
-        available.splice(playerIndex,1);
+  available.splice(playerIndex,1);
 
-      }
+}else if(available.length > 0){
+
+  teamsByMode[gameMode][team][i] =
+  available[0];
+
+  available.splice(0,1);
+
+}
 
     }
 
@@ -1294,14 +1317,16 @@ available[playerIndex];
 
 function changeFormation(team){
 
+  const number =
+  team.replace("team","");
+
   const select =
   document.getElementById(
-    team === "team1"
-    ? "formationSelect1"
-    : "formationSelect2"
+    "formationSelect" + number
   );
 
-  currentFormation[team] = select.value;
+  currentFormation[team] =
+  select.value;
 
   renderSingleTeam(team);
 
