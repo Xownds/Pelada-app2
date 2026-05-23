@@ -427,9 +427,6 @@ height:58px;
 ⚙️ Config
 </button>
 </div>
-  <div class="tab-content"
-id="teamsTab"
-style="display:block">
 <div class="card">
 
 <div class="inputs">
@@ -452,7 +449,7 @@ style="display:block">
 </div>
 
 <div class="counter" id="counter">
-0 / 50 jogadores
+0 / 22 jogadores
 </div>
 
 </div>
@@ -465,8 +462,19 @@ style="display:block">
 </div>
 
 </div>
+<div class="tab-content" id="playersTab">
+  
+<div class="card">
+
+<h2>Jogadores</h2>
 
 
+<div class="players-list" id="playersList"></div>
+
+</div>
+  
+ </div>
+<div class="tab-content" id="teamsTab">
 
 <div class="field-container">
  
@@ -515,93 +523,12 @@ style="display:block">
 </div>
 
 <div class="positions" id="team2"></div>
-  
-</div>
-
-<div class="field" id="field3"
-style="display:none;">
-
-<div class="goal top"></div>
-<div class="goal bottom"></div>
-
-<div class="box top"></div>
-<div class="box bottom"></div>
-
-<div style="
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:10px;">
-
-<h2>Time 3</h2>
-
-<select id="formationSelect3"
-onchange="changeFormation('team3')">
-
-<option value="433">4-3-3</option>
-<option value="442">4-4-2</option>
-<option value="352">3-5-2</option>
-<option value="532">5-3-2</option>
-<option value="451">4-5-1</option>
-
-</select>
 
 </div>
 
-<div class="positions"
-id="team3"></div>
-
 </div>
 
-<div class="field" id="field4"
-style="display:none;">
-
-<div class="goal top"></div>
-<div class="goal bottom"></div>
-
-<div class="box top"></div>
-<div class="box bottom"></div>
-
-<div style="
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:10px;">
-
-<h2>Time 4</h2>
-
-<select id="formationSelect4"
-onchange="changeFormation('team4')">
-
-<option value="433">4-3-3</option>
-<option value="442">4-4-2</option>
-<option value="352">3-5-2</option>
-<option value="532">5-3-2</option>
-<option value="451">4-5-1</option>
-
-</select>
-
 </div>
-
-<div class="positions"
-id="team4"></div>
-
-</div>
-  
-</div>
-
-<div class="tab-content"
-id="playersTab"
-style="display:none">
-<div class="card">
-
-<h2>Jogadores</h2>
-
-<div class="players-list" id="playersList"></div>
-
-</div>
-  
- </div>
 <div class="tab-content"
 id="modesTab"
 style="display:none">
@@ -609,21 +536,7 @@ style="display:none">
 <div class="card">
 
 <h2>🎮 Modos</h2>
-<h3 style="margin-top:20px;">
-👥 Quantidade de Times
-</h3>
 
-<button onclick="setTeamsAmount(2)">
-2 Times
-</button>
-
-<button onclick="setTeamsAmount(3)">
-3 Times
-</button>
-
-<button onclick="setTeamsAmount(4)">
-4 Times
-</button>
 <button onclick="setMode('football')">
 ⚽ Futebol 11
 </button>
@@ -663,32 +576,26 @@ style="display:none">
 </div>
 
 <script>
-const maxPlayers = 50;
+const maxPlayers = 22;
 
 let players = JSON.parse(localStorage.getItem("players")) || [];
 
 let teamsByMode = {
 
   football:{
-  team1:[],
-  team2:[],
-  team3:[],
-  team4:[]
-},
+    team1:[],
+    team2:[]
+  },
 
   society:{
-  team1:[],
-  team2:[],
-  team3:[],
-  team4:[]
-},
+    team1:[],
+    team2:[]
+  },
 
   futsal:{
-   team1:[],
-  team2:[],
-  team3:[],
-  team4:[]
-},
+    team1:[],
+    team2:[]
+  }
 
 };
 const formationRoles = {
@@ -944,9 +851,7 @@ const formations = {
 
 let currentFormation = {
   team1:"433",
-  team2:"433",
-  team3:"433",
-  team4:"433"
+  team2:"433"
 };
  
 let currentSlot = null;
@@ -956,19 +861,14 @@ function savePlayers(){
 }
 
 function updateCounter(){
-
-  document.getElementById(
-    "counter"
-  ).innerText =
-
-  `${players.length} / ${maxPlayers} jogadores`;
-
+  document.getElementById("counter").innerText =
+  `${players.length} / 22 jogadores`;
 }
 
 function addPlayer(){
 
   if(players.length >= maxPlayers){
-    alert("Limite máximo de jogadores atingido.");
+    alert("Limite máximo de 22 jogadores.");
     return;
   }
 
@@ -1077,17 +977,8 @@ function editPlayer(id){
 
 function renderTeams(){
 
-  for(
-    let i = 1;
-    i <= totalTeams;
-    i++
-  ){
-
-    renderSingleTeam(
-      `team${i}`
-    );
-
-  }
+  renderSingleTeam("team1");
+  renderSingleTeam("team2");
 
 }
 
@@ -1163,25 +1054,12 @@ formationRoles[currentFormation[team]][index];
 
   modalPlayers.innerHTML = "";
 
-  let usedPlayers = [];
-
-for(
-  let i = 1;
-  i <= totalTeams;
-  i++
-){
-
-  usedPlayers.push(
-    ...teamsByMode[gameMode]
-    [`team${i}`]
-  );
-
-}
-
-const usedIds =
-usedPlayers
-.filter(Boolean)
-.map(p => p.id);
+  const usedIds = [
+    ...teamsByMode[gameMode].team1,
+    ...teamsByMode[gameMode].team2
+  ]
+  .filter(Boolean)
+  .map(p => p.id);
 
   players.forEach(player => {
 
@@ -1233,25 +1111,14 @@ window.onclick = function(e){
 
 function clearTeams(){
 
-  const totalPlayers =
-  formations[
-    currentFormation.team1
-  ].length;
+ const totalPlayers =
+formations[currentFormation.team1].length;
 
-  for(
-    let i = 1;
-    i <= totalTeams;
-    i++
-  ){
+teamsByMode[gameMode].team1 =
+Array(totalPlayers).fill(null);
 
-    teamsByMode[gameMode]
-    [`team${i}`] =
-
-    Array(totalPlayers)
-    .fill(null);
-
-  }
-
+teamsByMode[gameMode].team2 =
+Array(totalPlayers).fill(null);
   renderTeams();
 
 }
@@ -1295,14 +1162,7 @@ if(players.length < minPlayers){
 
   shuffle(available);
 
- for(
-  let t = 1;
-  t <= totalTeams;
-  t++
-){
-
-  const team =
-  `team${t}`;
+  ["team1","team2"].forEach(team => {
 
     const formation =
     currentFormation[team];
@@ -1330,7 +1190,7 @@ available[playerIndex];
 
     }
 
-  }
+  });
 
   renderTeams();
 
@@ -1339,13 +1199,12 @@ available[playerIndex];
 
 function changeFormation(team){
 
-const number =
-team.replace("team","");
-
-const select =
-document.getElementById(
-  `formationSelect${number}`
-);
+  const select =
+  document.getElementById(
+    team === "team1"
+    ? "formationSelect1"
+    : "formationSelect2"
+  );
 
   currentFormation[team] = select.value;
 
@@ -1390,7 +1249,6 @@ function showTab(tab){
 
 }
 let gameMode = "football";
-let totalTeams = 2;
 const modeConfig = {
 
   football:{
@@ -1419,84 +1277,60 @@ function setMode(mode){
   const formationsList =
   config.formations;
 
-  for(
-    let i = 1;
-    i <= 4;
-    i++
-  ){
-
-    const select =
-document.getElementById(
-  `formationSelect${i}`
-);
-
-    if(!select) continue;
-
-    select.innerHTML = "";
-
-    formationsList.forEach(f => {
-
-      select.innerHTML += `
-        <option value="${f}">
-          ${f}
-        </option>
-      `;
-
-    });
-
-    currentFormation[
-      `team${i}`
-    ] = formationsList[0];
-
-    select.value =
-    formationsList[0];
-
-  }
-
-  const modeLabel =
+  const select1 =
   document.getElementById(
-    "modeLabel"
+    "formationSelect1"
   );
 
-  if(mode === "football"){
-    modeLabel.innerHTML =
-    "⚽ Modo Futebol";
-  }
+  const select2 =
+  document.getElementById(
+    "formationSelect2"
+  );
 
-  if(mode === "society"){
-    modeLabel.innerHTML =
-    "🏟️ Modo Society";
-  }
+  select1.innerHTML = "";
+  select2.innerHTML = "";
 
-  if(mode === "futsal"){
-    modeLabel.innerHTML =
-    "🔥 Modo Futsal";
-  }
+  formationsList.forEach(f => {
 
+    select1.innerHTML +=
+    `<option value="${f}">
+      ${f}
+    </option>`;
+
+    select2.innerHTML +=
+    `<option value="${f}">
+      ${f}
+    </option>`;
+
+  });
+
+  currentFormation.team1 =
+  formationsList[0];
+
+  currentFormation.team2 =
+  formationsList[0];
+const modeLabel =
+document.getElementById(
+  "modeLabel"
+);
+
+if(mode === "football"){
+  modeLabel.innerHTML =
+  "⚽ Modo Futebol";
+}
+
+if(mode === "society"){
+  modeLabel.innerHTML =
+  "🏟️ Modo Society";
+}
+
+if(mode === "futsal"){
+  modeLabel.innerHTML =
+  "🔥 Modo Futsal";
+}
   clearTeams();
 
   renderTeams();
-
-}
-  function setTeamsAmount(amount){
-
-  totalTeams = amount;
-document.getElementById(
-  "field3"
-).style.display =
-amount >= 3
-? "block"
-: "none";
-
-document.getElementById(
-  "field4"
-).style.display =
-amount >= 4
-? "block"
-: "none";
-  alert(
-    `${amount} times ativados`
-  );
 
 }
   function resetApp(){
