@@ -604,7 +604,21 @@ style="display:none">
 <div class="card">
 
 <h2>🎮 Modos</h2>
+<h3 style="margin-top:20px;">
+👥 Quantidade de Times
+</h3>
 
+<button onclick="setTeamsAmount(2)">
+2 Times
+</button>
+
+<button onclick="setTeamsAmount(3)">
+3 Times
+</button>
+
+<button onclick="setTeamsAmount(4)">
+4 Times
+</button>
 <button onclick="setMode('football')">
 ⚽ Futebol 11
 </button>
@@ -1330,6 +1344,7 @@ function showTab(tab){
 
 }
 let gameMode = "football";
+let totalTeams = 2;
 const modeConfig = {
 
   football:{
@@ -1412,6 +1427,29 @@ if(mode === "futsal"){
   clearTeams();
 
   renderTeams();
+
+}
+function setTeamsAmount(amount){
+
+  totalTeams = amount;
+
+  document.getElementById(
+    "field3"
+  ).style.display =
+  amount >= 3
+  ? "block"
+  : "none";
+
+  document.getElementById(
+    "field4"
+  ).style.display =
+  amount >= 4
+  ? "block"
+  : "none";
+
+  alert(
+    `${amount} times ativados`
+  );
 
 }
   function resetApp(){
