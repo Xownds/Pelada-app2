@@ -1191,29 +1191,102 @@ function renderReserves(){
     div.className =
     "player-card";
 
-    div.innerHTML = `
-      <div class="player-info">
+   div.innerHTML = `
 
-        <strong>
-          ${player.name}
-        </strong>
+<div class="player-info">
 
-        <span>
-          Camisa ${player.number}
-        </span>
+<strong>
+${player.name}
+</strong>
 
-        <span>
-          ${player.position}
-        </span>
+<span>
+Camisa ${player.number}
+</span>
 
-      </div>
-    `;
+<span>
+${player.position}
+</span>
 
-    list.appendChild(div);
+</div>
 
-  });
+<div class="player-actions">
+
+<button
+class="small-btn"
+onclick="addReserveToField(${player.id})">
+
+➕ Colocar
+
+</button>
+
+</div>
+
+`;
+
+list.appendChild(div);
+
+});
 
 }
+
+function addReserveToField(id){
+  const emptySlots = [];
+
+  for(let i = 1; i <= totalTeams; i++){
+
+    const team =
+    "team" + i;
+
+    const teamArray =
+    teamsByMode[gameMode][team];
+
+    for(let j = 0; j < teamArray.length; j++){
+
+      if(!teamArray[j]){
+
+        emptySlots.push({
+          team,
+          index:j
+        });
+
+      }
+
+    }
+
+  }
+
+  if(emptySlots.length === 0){
+
+    alert(
+      "Não há slots vazios"
+    );
+
+    return;
+
+  }
+
+  const slot =
+  emptySlots[0];
+
+  const player =
+  reserves.find(
+    p => p.id === id
+  );
+
+  teamsByMode[gameMode]
+  [slot.team]
+  [slot.index] = player;
+
+  reserves =
+  reserves.filter(
+    p => p.id !== id
+  );
+
+  renderTeams();
+
+  renderReserves();
+
+}                   
 function openModal(team,index){
   
 const role =
@@ -1248,6 +1321,11 @@ usedIds
   players.forEach(player => {
 
     if(finalUsedIds.includes(player.id)) return;
+    if(
+  reserves.some(
+    r => r.id === player.id
+  )
+) return;
     const div = document.createElement("div");
 
     div.className = "modal-player";
