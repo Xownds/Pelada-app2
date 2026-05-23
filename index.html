@@ -651,19 +651,25 @@ let players = JSON.parse(localStorage.getItem("players")) || [];
 let teamsByMode = {
 
   football:{
-    team1:[],
-    team2:[]
-  },
+  team1:[],
+  team2:[],
+  team3:[],
+  team4:[]
+},
 
   society:{
-    team1:[],
-    team2:[]
-  },
+  team1:[],
+  team2:[]
+  team3:[],
+  team4:[]
+},
 
   futsal:{
-    team1:[],
-    team2:[]
-  }
+  team1:[],
+  team2:[]
+  team3:[],
+  team4:[]
+},
 
 };
 const formationRoles = {
@@ -1049,6 +1055,9 @@ function renderTeams(){
 
   renderSingleTeam("team1");
   renderSingleTeam("team2");
+
+  renderSingleTeam("team3");
+  renderSingleTeam("team4");
 
 }
 
