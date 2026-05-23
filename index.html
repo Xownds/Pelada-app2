@@ -359,6 +359,8 @@ box-shadow .25s;
 }
 
 .modal-content{
+  animation:
+modalOpen .25s;
   background:#102318;
   width:90%;
   max-height:80vh;
@@ -366,7 +368,21 @@ box-shadow .25s;
   padding:20px;
   border-radius:20px;
 }
+@keyframes modalOpen{
 
+  from{
+    opacity:0;
+    transform:
+    scale(.92);
+  }
+
+  to{
+    opacity:1;
+    transform:
+    scale(1);
+  }
+
+}
 .modal-player{
   background:#163320;
   padding:12px;
@@ -415,6 +431,28 @@ box-shadow .25s;
     transform:
     translate(-50%,-50%)
     scale(1);
+  }
+
+}
+.tab-content{
+
+  animation:
+  fadeTab .35s;
+
+}
+
+@keyframes fadeTab{
+
+  from{
+    opacity:0;
+    transform:
+    translateY(10px);
+  }
+
+  to{
+    opacity:1;
+    transform:
+    translateY(0);
   }
 
 }
@@ -619,7 +657,10 @@ onchange="changeFormation('team4')">
 id="team4"></div>
 
 </div>
-<div class="card">
+<div class="card"
+style="
+grid-column:1/-1;
+">
 
 <h2>🪑 Reservas</h2>
 
@@ -1574,7 +1615,9 @@ function shuffle(array){
 }
 
 function drawTeams(){
-  let playersPerTeam = 11;
+  document.body.style.pointerEvents =
+"none";
+let playersPerTeam = 11;
 
 if(gameMode === "society"){
   playersPerTeam = 7;
@@ -1654,6 +1697,12 @@ reserves = available;
 renderTeams();
 saveTeams();
 renderReserves();
+setTimeout(() => {
+
+  document.body.style.pointerEvents =
+  "auto";
+
+},500);
 
 
 }
