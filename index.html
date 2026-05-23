@@ -576,7 +576,7 @@ style="display:none">
 </div>
 
 <script>
-const maxPlayers = 22;
+const maxPlayers = 50;
 
 let players = JSON.parse(localStorage.getItem("players")) || [];
 
@@ -842,10 +842,12 @@ const formations = {
 
 "311":[
 {top:"90%",left:"50%"},
-{top:"60%",left:"50%"},
-{top:"40%",left:"50%"},
-{top:"20%",left:"35%"},
-{top:"20%",left:"65%"}
+
+{top:"65%",left:"50%"},
+
+{top:"45%",left:"20%"},
+{top:"45%",left:"50%"},
+{top:"45%",left:"80%"}
 ],
 };
 
@@ -862,13 +864,13 @@ function savePlayers(){
 
 function updateCounter(){
   document.getElementById("counter").innerText =
-  `${players.length} / 22 jogadores`;
+ `${players.length} / ${maxPlayers} jogadores`
 }
 
 function addPlayer(){
 
   if(players.length >= maxPlayers){
-    alert("Limite máximo de 22 jogadores.");
+    alert(`Limite máximo de ${maxPlayers} jogadores.`);
     return;
   }
 
