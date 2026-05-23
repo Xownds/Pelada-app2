@@ -169,15 +169,17 @@ border:none;
 
 border-radius:12px;
 
-background:#13281c;
+background:#13281c !important;
 
-color:white;
+color:white !important;
 
 font-size:15px;
 
 appearance:none;
 
 -webkit-appearance:none;
+
+-moz-appearance:none;
 
 outline:none;
 
@@ -563,6 +565,13 @@ box-shadow .25s;
   .field-container{
     grid-template-columns:1fr 1fr;
   }
+ }
+select option{
+
+background:#13281c;
+
+color:white;
+
 }
 </style>
 </head>
@@ -601,7 +610,8 @@ box-shadow .25s;
 
 <input type="number" id="number" placeholder="Número da camisa">
 
-<select id="position">
+<select id="position"
+style="background:#13281c;color:white;">
 <option value="Goleiro">Goleiro</option>
 <option value="Zagueiro">Zagueiro</option>
 <option value="Lateral">Lateral</option>
@@ -654,8 +664,10 @@ box-shadow .25s;
 
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
   <h2>Time 1</h2>
-
-<select id="formationSelect1" onchange="changeFormation('team1')">
+  
+<select id="formationSelect1"
+style="background:#13281c;color:white;"
+onchange="changeFormation('team1')">
     <option value="433">4-3-3</option>
     <option value="442">4-4-2</option>
     <option value="352">3-5-2</option>
@@ -679,7 +691,9 @@ box-shadow .25s;
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
   <h2>Time 2</h2>
  
-<select id="formationSelect2" onchange="changeFormation('team2')">
+<select id="formationSelect2"
+style="background:#13281c;color:white;"
+onchange="changeFormation('team2')">
     <option value="433">4-3-3</option>
     <option value="442">4-4-2</option>
     <option value="352">3-5-2</option>
@@ -707,8 +721,8 @@ align-items:center;
 margin-bottom:10px;">
 
 <h2>Time 3</h2>
-
 <select id="formationSelect3"
+style="background:#13281c;color:white;"
 onchange="changeFormation('team3')">
 
 <option value="433">4-3-3</option>
@@ -744,6 +758,7 @@ margin-bottom:10px;">
 <h2>Time 4</h2>
 
 <select id="formationSelect4"
+style="background:#13281c;color:white;"
 onchange="changeFormation('team4')">
 
 <option value="433">4-3-3</option>
@@ -1596,17 +1611,18 @@ ${player.name}
       Camisa ${player.number} • ${player.position}
     `;
 
-    div.onclick = () => {
+   div.onclick = () => {
 
       teamsByMode[gameMode][team][index] =
 player;
+
+      saveTeams();
 
       renderTeams();
 
       closeModal();
 
     };
-
     modalPlayers.appendChild(div);
 
   });
@@ -1660,13 +1676,13 @@ if(reserves.length > 0){
         r => r.id !== reserve.id
       );
 
+      saveTeams();
+
       renderTeams();
 
       renderReserves();
 
       closeModal();
-
-    };
 
     modalPlayers.appendChild(div);
 
