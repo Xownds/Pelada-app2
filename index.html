@@ -427,9 +427,6 @@ height:58px;
 ⚙️ Config
 </button>
 </div>
-<div class="tab-content"
-id="teamsTab"
-style="display:block">
 <div class="card">
 
 <div class="inputs">
@@ -437,6 +434,7 @@ style="display:block">
 <input type="text" id="name" placeholder="Nome do jogador">
 
 <input type="number" id="number" placeholder="Número da camisa">
+
 <select id="position">
 <option value="Goleiro">Goleiro</option>
 <option value="Zagueiro">Zagueiro</option>
@@ -464,10 +462,27 @@ style="display:block">
 </div>
 
 </div>
-
   
+<div class="tab-content"
+id="playersTab"
+style="display:none">
+  
+<div class="card">
 
- <div class="field-container">
+<h2>Jogadores</h2>
+
+
+<div class="players-list" id="playersList"></div>
+
+</div>
+  
+ </div>
+<div class="tab-content"
+id="teamsTab"
+style="display:block">
+
+<div class="field-container">
+ 
 <div class="field">
 
   <div class="goal top"></div>
@@ -587,7 +602,6 @@ id="team4"></div>
 </div>
   
 </div>
-  
 <div class="tab-content"
 id="modesTab"
 style="display:none">
@@ -647,7 +661,8 @@ style="display:none">
 <h2>Selecionar Jogador</h2>
 <div id="modalPlayers"></div>
 </div>
-  
+</div>
+
 <script>
 const maxPlayers = 50;
 
