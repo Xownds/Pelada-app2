@@ -392,7 +392,27 @@ height:58px;
     transform:translateY(0);
   }
 }
+@keyframes pulsePlayer{
 
+  0%{
+    transform:
+    translate(-50%,-50%)
+    scale(1);
+  }
+
+  50%{
+    transform:
+    translate(-50%,-50%)
+    scale(1.18);
+  }
+
+  100%{
+    transform:
+    translate(-50%,-50%)
+    scale(1);
+  }
+
+}
 @media(min-width:900px){
   .field-container{
     grid-template-columns:1fr 1fr;
@@ -594,9 +614,6 @@ onchange="changeFormation('team4')">
 id="team4"></div>
 
 </div>
-</div>
-
-</div>
 <div class="card">
 
 <h2>🪑 Reservas</h2>
@@ -607,6 +624,10 @@ id="reservesList">
 </div>
 
 </div>
+</div>
+
+</div>
+
 <div class="tab-content"
 id="modesTab"
 style="display:none">
@@ -1260,7 +1281,13 @@ teamsByMode[gameMode][teamName][index];
     if(player){
 
       slot.classList.add("filled");
+slot.style.animation =
+"pulsePlayer .45s";
+  setTimeout(() => {
 
+  slot.style.animation = "";
+
+},450);
     const colors =
 teamColors[teamName];
 
@@ -1802,8 +1829,13 @@ function setTeamsAmount(amount){
   }
 
 }
+showTab("teams");
+
 renderPlayers();
+
 renderTeams();
+
+renderReserves();
 </script>
 
 </body>
