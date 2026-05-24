@@ -1638,55 +1638,56 @@ if(reserves.length > 0){
 
   modalPlayers.appendChild(title);
 
-  reserves.forEach(reserve => {
+ reserves.forEach(reserve => {
 
-    const div =
-    document.createElement("div");
+  const div =
+  document.createElement("div");
 
-    div.className =
-    "modal-player";
+  div.className =
+  "modal-player";
 
-    div.innerHTML = `
-      <strong>
-        ${reserve.name}
-      </strong><br>
+  div.innerHTML = `
+    <strong>
+      ${reserve.name}
+    </strong><br>
 
-      Camisa ${reserve.number}
-      •
-      ${reserve.position}
-    `;
+    Camisa ${reserve.number}
+    •
+    ${reserve.position}
+  `;
 
-    div.onclick = () => {
+  div.onclick = () => {
 
-      const oldPlayer =
-      teamsByMode[gameMode]
-      [team][index];
+    const oldPlayer =
+    teamsByMode[gameMode][team][index];
 
-      if(oldPlayer){
+    if(oldPlayer){
 
-        reserves.push(oldPlayer);
+      reserves.push(oldPlayer);
 
-      }
+    }
 
-      teamsByMode[gameMode]
-      [team][index] = reserve;
+    teamsByMode[gameMode][team][index] =
+    reserve;
 
-      reserves =
-      reserves.filter(
-        r => r.id !== reserve.id
-      );
+    reserves =
+    reserves.filter(
+      r => r.id !== reserve.id
+    );
 
-      saveTeams();
+    saveTeams();
 
-      renderTeams();
+    renderTeams();
 
-      renderReserves();
+    renderReserves();
 
-      closeModal();
+    closeModal();
 
-    modalPlayers.appendChild(div);
+  };
 
-  });
+  modalPlayers.appendChild(div);
+
+});
 
 }
   modal.style.display = "flex";
@@ -1840,9 +1841,12 @@ function changeFormation(team){
   currentFormation[team] =
   select.value;
 
+  saveTeams();
+
   renderSingleTeam(team);
 
 }
+
 function toggleCaptain(id){
 
   players.forEach(p => p.captain = false);
@@ -2012,7 +2016,7 @@ function confirmReset(){
 localStorage.clear();
 
 players = [];
-
+savePlayers();
 clearTeams();
 
 renderPlayers();
@@ -2041,9 +2045,6 @@ function closeWarningModal(){
 document
 .getElementById("warningModal")
 .style.display = "none";
-
-document.body.style.pointerEvents =
-"auto";
 
 }
 let editingPlayerId = null;
