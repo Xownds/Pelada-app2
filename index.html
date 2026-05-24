@@ -36,7 +36,7 @@ animation:fadeIn .2s ease;
 }
 
 .modal-box{
-
+animation:modalOpen .25s ease;
 background:#0f2318;
 
 border:2px solid #32ff7e;
@@ -196,6 +196,12 @@ button{
   font-weight:bold;
   cursor:pointer;
   transition:.2s;
+}
+
+button:active{
+
+transform:scale(.96);
+
 }
 
 button:hover{
@@ -372,7 +378,7 @@ height:64px;
   align-items:center;
   justify-content:center;
   text-align:center;
-  font-size:11px;
+  font-size:10px;
   padding:5px;
   cursor:pointer;
   transform:translate(-50%,-50%);
@@ -411,9 +417,8 @@ box-shadow .25s;
     #19c963
   );
 
-  border-radius:
-  10px 10px 14px 14px;
-
+border-radius:
+12px 12px 18px 18px;
   position:relative;
 
   display:flex;
@@ -875,7 +880,19 @@ margin-top:15px;
 
 <div
 class="modal-buttons"
-style="margin-top:20px;">
+style="margin-top:20px;flex-direction:column;">
+
+<button
+class="confirm-btn"
+style="
+background:#ff4d4d;
+color:white;
+"
+onclick="removePlayerFromField()">
+
+Tirar do campo
+
+</button>
 
 <button
 class="cancel-btn"
@@ -886,7 +903,6 @@ Fechar
 </button>
 
 </div>
-
 </div>
 
 </div>
@@ -1047,7 +1063,7 @@ const formationRoles = {
 const formations = {
 
   "433":[
-    {top:"84%",left:"50%"},
+    {top:"87%",left:"50%"},
     {top:"72%",left:"20%"},
     {top:"72%",left:"40%"},
     {top:"72%",left:"60%"},
@@ -1061,7 +1077,7 @@ const formations = {
   ],
 
   "442":[
-    {top:"84%",left:"50%"},
+    {top:"87%",left:"50%"},
     {top:"72%",left:"20%"},
     {top:"72%",left:"40%"},
     {top:"72%",left:"60%"},
@@ -1074,7 +1090,7 @@ const formations = {
     {top:"25%",left:"65%"},
   ],  
 "352":[
-  {top:"84%",left:"50%"},
+  {top:"87%",left:"50%"},
   {top:"70%",left:"30%"},
   {top:"70%",left:"50%"},
   {top:"70%",left:"70%"},
@@ -1088,7 +1104,7 @@ const formations = {
 ],
 
 "532":[
-  {top:"84%",left:"50%"},
+  {top:"87%",left:"50%"},
   {top:"72%",left:"10%"},
   {top:"72%",left:"30%"},
   {top:"72%",left:"50%"},
@@ -1102,7 +1118,7 @@ const formations = {
 ],
 
 "451":[
-  {top:"84%",left:"50%"},
+  {top:"87%",left:"50%"},
   {top:"72%",left:"20%"},
   {top:"72%",left:"40%"},
   {top:"72%",left:"60%"},
@@ -1116,7 +1132,7 @@ const formations = {
 ],
 
 "322":[
-{top:"84%",left:"50%"},
+{top:"87%",left:"50%"},
 {top:"65%",left:"35%"},
 {top:"65%",left:"65%"},
 {top:"45%",left:"35%"},
@@ -1126,7 +1142,7 @@ const formations = {
 ],
 
 "231":[
-{top:"84%",left:"50%"},
+{top:"87%",left:"50%"},
 {top:"65%",left:"35%"},
 {top:"65%",left:"65%"},
 {top:"45%",left:"50%"},
@@ -1136,7 +1152,7 @@ const formations = {
 ],
 
 "2121":[
-{top:"84%",left:"50%"},
+{top:"87%",left:"50%"},
 {top:"65%",left:"35%"},
 {top:"65%",left:"65%"},
 {top:"45%",left:"50%"},
@@ -1146,7 +1162,7 @@ const formations = {
 ],
 
 "121":[
-{top:"84%",left:"50%"},
+{top:"87%",left:"50%"},
 {top:"60%",left:"50%"},
 {top:"40%",left:"50%"},
 {top:"20%",left:"35%"},
@@ -1154,7 +1170,7 @@ const formations = {
 ],
 
 "22":[
-{top:"84%",left:"50%"},
+{top:"87%",left:"50%"},
 {top:"60%",left:"35%"},
 {top:"60%",left:"65%"},
 {top:"25%",left:"35%"},
@@ -1162,7 +1178,7 @@ const formations = {
 ],
 
 "311":[
-{top:"84%",left:"50%"},
+{top:"87%",left:"50%"},
 
 {top:"65%",left:"50%"},
 
@@ -1710,7 +1726,36 @@ if(reserves.length > 0){
 function closeModal(){
   document.getElementById("modal").style.display = "none";
 }
+function removePlayerFromField(){
 
+if(!currentSlot) return;
+
+const {
+team,
+index
+} = currentSlot;
+
+const removedPlayer =
+teamsByMode[gameMode][team][index];
+
+if(
+removedPlayer &&
+!reserves.some(
+r => r.id === removedPlayer.id
+)
+){
+reserves.push(removedPlayer);
+}
+
+teamsByMode[gameMode][team][index] = null;
+
+saveTeams();
+
+renderTeams();
+
+closeModal();
+
+}
 window.onclick = function(e){
 
   const modal = document.getElementById("modal");
@@ -1775,11 +1820,9 @@ showWarning(
 `Você precisa de no mínimo ${minPlayers} jogadores`
 );
 
-
 return;
 
 }
-
   clearTeams();
 
   const available = [...players];
@@ -1837,6 +1880,7 @@ reserves = available;
 renderTeams();
 saveTeams();
 renderReserves();
+showWarning("⚽ Times sorteados");
 
 }
 
