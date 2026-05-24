@@ -45,8 +45,8 @@ border-radius:20px;
 
 padding:25px;
 
-width:85%;
-max-width:350px;
+width:90%;
+max-width:380px;
 
 text-align:center;
 
@@ -199,7 +199,13 @@ button{
 }
 
 button:hover{
-  transform:scale(1.03);
+
+transform:
+scale(1.04);
+
+box-shadow:
+0 0 15px rgba(50,255,126,.35);
+
 }
 
 .players-list{
@@ -251,7 +257,6 @@ color:white;
   grid-template-columns:1fr;
   gap:20px;
 }
-
 .field{
 background-image:
 linear-gradient(
@@ -265,12 +270,13 @@ background-size:100% 40px;
   border:3px solid #32ff7e;
   border-radius:20px;
   min-height:650px;
-  padding:10px;
+  padding:10px 10px 70px 10px;
   position:relative;
   overflow:hidden;
 
   background-size:100% 100%;
   box-shadow: inset 0 0 40px rgba(0,0,0,.5);
+  background-blend-mode:overlay;
 }
 
 .field::before{
@@ -357,8 +363,8 @@ all .45s cubic-bezier(.2,.8,.2,1);z-index:10;
   will-change:
 transform;
   position:absolute;
- width:58px;
-height:58px;
+ width:64px;
+height:64px;
   border-radius:50%;
   border:2px dashed rgba(255,255,255,.3);
   background:rgba(255,255,255,.08);
@@ -387,7 +393,7 @@ height:58px;
 .slot.filled:hover{
   transform:
   translate(-50%,-50%)
-  scale(1.18);
+ scale(1.12);
 
   z-index:999;
 }
@@ -541,8 +547,8 @@ box-shadow .25s;
 }
 .tab-content{
 
-  animation:
-  fadeTab .35s;
+animation:
+fadeTab .35s ease;
 
 }
 
@@ -1041,7 +1047,7 @@ const formationRoles = {
 const formations = {
 
   "433":[
-    {top:"90%",left:"50%"},
+    {top:"84%",left:"50%"},
     {top:"72%",left:"20%"},
     {top:"72%",left:"40%"},
     {top:"72%",left:"60%"},
@@ -1055,7 +1061,7 @@ const formations = {
   ],
 
   "442":[
-    {top:"90%",left:"50%"},
+    {top:"84%",left:"50%"},
     {top:"72%",left:"20%"},
     {top:"72%",left:"40%"},
     {top:"72%",left:"60%"},
@@ -1068,7 +1074,7 @@ const formations = {
     {top:"25%",left:"65%"},
   ],  
 "352":[
-  {top:"90%",left:"50%"},
+  {top:"84%",left:"50%"},
   {top:"70%",left:"30%"},
   {top:"70%",left:"50%"},
   {top:"70%",left:"70%"},
@@ -1082,7 +1088,7 @@ const formations = {
 ],
 
 "532":[
-  {top:"90%",left:"50%"},
+  {top:"84%",left:"50%"},
   {top:"72%",left:"10%"},
   {top:"72%",left:"30%"},
   {top:"72%",left:"50%"},
@@ -1096,7 +1102,7 @@ const formations = {
 ],
 
 "451":[
-  {top:"90%",left:"50%"},
+  {top:"84%",left:"50%"},
   {top:"72%",left:"20%"},
   {top:"72%",left:"40%"},
   {top:"72%",left:"60%"},
@@ -1110,7 +1116,7 @@ const formations = {
 ],
 
 "322":[
-{top:"90%",left:"50%"},
+{top:"84%",left:"50%"},
 {top:"65%",left:"35%"},
 {top:"65%",left:"65%"},
 {top:"45%",left:"35%"},
@@ -1120,7 +1126,7 @@ const formations = {
 ],
 
 "231":[
-{top:"90%",left:"50%"},
+{top:"84%",left:"50%"},
 {top:"65%",left:"35%"},
 {top:"65%",left:"65%"},
 {top:"45%",left:"50%"},
@@ -1130,7 +1136,7 @@ const formations = {
 ],
 
 "2121":[
-{top:"90%",left:"50%"},
+{top:"84%",left:"50%"},
 {top:"65%",left:"35%"},
 {top:"65%",left:"65%"},
 {top:"45%",left:"50%"},
@@ -1140,7 +1146,7 @@ const formations = {
 ],
 
 "121":[
-{top:"90%",left:"50%"},
+{top:"84%",left:"50%"},
 {top:"60%",left:"50%"},
 {top:"40%",left:"50%"},
 {top:"20%",left:"35%"},
@@ -1148,7 +1154,7 @@ const formations = {
 ],
 
 "22":[
-{top:"90%",left:"50%"},
+{top:"84%",left:"50%"},
 {top:"60%",left:"35%"},
 {top:"60%",left:"65%"},
 {top:"25%",left:"35%"},
@@ -1156,7 +1162,7 @@ const formations = {
 ],
 
 "311":[
-{top:"90%",left:"50%"},
+{top:"84%",left:"50%"},
 
 {top:"65%",left:"50%"},
 
@@ -1948,6 +1954,17 @@ if(mode === "futsal"){
   clearTeams();
 
   renderTeams();
+  if(mode === "football"){
+showWarning("⚽ Modo Futebol ativado");
+}
+
+if(mode === "society"){
+showWarning("🏟️ Modo Society ativado");
+}
+
+if(mode === "futsal"){
+showWarning("🔥 Modo Futsal ativado");
+}
   saveTeams();
 
 }
@@ -2228,7 +2245,13 @@ formations.forEach(f => {
 container.innerHTML += `
 
 <button
-style="margin-top:10px;"
+class="main-btn"
+style="
+margin-top:10px;
+background:#13281c;
+border:2px solid #32ff7e;
+box-shadow:0 0 10px rgba(50,255,126,.3);
+"
 onclick="selectFormation('${f}')">
 
 ${f}
@@ -2284,8 +2307,9 @@ document.getElementById(
 <button onclick="selectPosition('Meia')">Meia</button>
 
 <button onclick="selectPosition('Atacante')">Atacante</button>
-
-<button onclick="closePositionModal()">Cancelar</button>
+<button onclick="closePositionModal()">
+Cancelar
+</button>
 
 </div>
 
