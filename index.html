@@ -362,15 +362,15 @@ background-size:100% 40px;
 
 .slot{display:flex;
 flex-direction:column;
-gap:2px;
+gap:5px;
 
 transition:
 all .45s cubic-bezier(.2,.8,.2,1);z-index:10;
   will-change:
 transform;
   position:absolute;
- width:64px;
-height:64px;
+ width:125px;
+height:125px;
   border-radius:50%;
   border:2px dashed rgba(255,255,255,.3);
   background:rgba(255,255,255,.08);
@@ -378,11 +378,15 @@ height:64px;
   align-items:center;
   justify-content:center;
   text-align:center;
-  font-size:10px;
-  padding:5px;
+  font-size:13px;
+ padding:8px;
   cursor:pointer;
   transform:translate(-50%,-50%);
   font-weight:bold;
+ backdrop-filter:blur(6px);
+
+box-shadow:
+0 0 18px rgba(50,255,126,.35);
 }
 
 .slot:hover{
@@ -407,8 +411,8 @@ height:64px;
   transition:
 transform .25s,
 box-shadow .25s;
-  width:42px;
-  height:46px;
+  width:58px;
+height:64px;
 
   background:
   linear-gradient(
@@ -418,7 +422,7 @@ box-shadow .25s;
   );
 
 border-radius:
-12px 12px 18px 18px;
+16px 16px 24px 24px;
   position:relative;
 
   display:flex;
@@ -427,14 +431,17 @@ border-radius:
 
   color:white;
   font-weight:900;
-  font-size:15px;
+  font-size:22px;
 
   box-shadow:
   0 4px 15px rgba(0,0,0,.45);
 
   border:
   2px solid rgba(255,255,255,.15);
+text-shadow:0 0 8px rgba(255,255,255,.8);
 
+box-shadow:
+0 0 18px rgba(50,255,126,.55);
   overflow:hidden;
 }.shirt::before,
 .shirt::after{
@@ -461,10 +468,33 @@ border-radius:
 
   transform:scale(1.12);
 }
-.player-name{
-  font-size:9px;
-  font-weight:700;
-  max-width:70px;
+ .player-name{
+
+font-size:14px;
+
+font-weight:900;
+
+max-width:120px;
+
+line-height:1.2;
+
+text-align:center;
+
+overflow:hidden;
+
+text-overflow:ellipsis;
+
+white-space:nowrap;
+
+text-shadow:
+0 0 8px rgba(0,0,0,.95),
+0 0 16px rgba(0,0,0,.75);
+
+letter-spacing:.5px;
+
+color:#ffffff;
+}
+ font-weight:700;
   overflow:hidden;
   text-overflow:ellipsis;
   white-space:nowrap;
@@ -609,29 +639,37 @@ margin-top:5px;
 }
 .overall-badge{
 
-margin-top:2px;
+margin-top:6px;
 
-padding:2px 6px;
+padding:6px 14px;
 
-border-radius:8px;
+border-radius:999px;
 
 background:
 linear-gradient(
 135deg,
-#ffd32a,
+#ffe066,
 #ffb300
 );
 
 color:#111;
 
-font-size:10px;
+font-size:18px;
 
 font-weight:900;
 
 box-shadow:
-0 0 10px rgba(255,211,42,.45);
+0 0 16px rgba(255,211,42,.6);
 
-display:inline-block;
+display:inline-flex;
+
+align-items:center;
+
+justify-content:center;
+
+gap:5px;
+
+}
 
 }
 </style>
