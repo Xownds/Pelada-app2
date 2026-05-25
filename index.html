@@ -1524,6 +1524,8 @@ ${player.number}
 <div class="player-name">
   ${player.captain ? "🧠 " : ""}
   ${player.name}
+  <br>
+  ⭐ ${player.overall}
 </div>
 `;
 
@@ -1576,7 +1578,7 @@ Camisa ${player.number}
 </span>
 
 <span>
-${player.position}
+${player.position} • OVR ${player.overall}
 </span>
 
 </div>
@@ -1649,7 +1651,11 @@ usedIds
 ${player.captain ? "🧠 " : ""}
 ${player.name}
 </strong><br>
-      Camisa ${player.number} • ${player.position}
+     Camisa ${player.number}
+•
+${player.position}
+•
+⭐ ${player.overall}
     `;
 
    div.onclick = () => {
@@ -1693,8 +1699,10 @@ if(reserves.length > 0){
     </strong><br>
 
     Camisa ${reserve.number}
-    •
-    ${reserve.position}
+•
+${reserve.position}
+•
+⭐ ${reserve.overall}
   `;
 
   div.onclick = () => {
@@ -2106,7 +2114,6 @@ document
 let editingPlayerId = null;
 
 function openEditModal(id){
-
 const player =
 players.find(p => p.id === id);
 
@@ -2119,6 +2126,10 @@ document
 document
 .getElementById("editNumber")
 .value = player.number;
+
+document
+.getElementById("editOverall")
+.value = player.overall;
 
 document
 .getElementById("editModal")
@@ -2135,7 +2146,6 @@ document
 }
 
 function saveEditPlayer(){
-
 const player =
 players.find(
 p => p.id === editingPlayerId
@@ -2151,11 +2161,20 @@ document
 .getElementById("editNumber")
 .value;
 
+player.overall =
+Number(
+document
+.getElementById("editOverall")
+.value
+);
+
 savePlayers();
 
 renderPlayers();
 
 renderTeams();
+
+renderReserves();
 
 closeEditModal();
 
@@ -2236,6 +2255,13 @@ placeholder="Nome">
 type="number"
 id="editNumber"
 placeholder="Número"
+style="margin-top:10px;">
+<input
+type="number"
+id="editOverall"
+placeholder="Overall"
+min="0"
+max="10"
 style="margin-top:10px;">
 
 <div
