@@ -647,7 +647,13 @@ margin-top:5px;
 <button class="main-btn" onclick="openPositionModal()">
 Escolher posição
 </button>
+<button
+class="main-btn"
+onclick="openOverallModal()">
 
+Escolher overall
+
+</button>
 <button onclick="addPlayer()">Adicionar Jogador</button>
 
 </div>
@@ -1195,6 +1201,7 @@ let currentFormation = {
   team4:"433"
 };
 let selectedPosition = "Goleiro";
+let selectedOverall = 5;
 let currentSlot = null;
 let gameMode = "football";
 let totalTeams = 2;
@@ -1335,6 +1342,7 @@ function addPlayer(){
   const name = document.getElementById("name").value.trim();
   const number = document.getElementById("number").value.trim();
  const position = selectedPosition;
+ const overall = selectedOverall;
 
   if(!name || !number){
     showWarning("Preencha os campos.");
@@ -1346,7 +1354,8 @@ players.push({
   name,
   number,
   position,
-  captain:false
+  captain:false,
+overall:overall
 });
 
   savePlayers();
@@ -1377,7 +1386,10 @@ ${player.captain ? "🧠 " : ""}
 ${player.name}
 </strong>
         <span>Camisa ${player.number}</span>
-        <span>${player.position}</span>
+        <span>
+${player.position}
+• OVR ${player.overall}
+</span>
       </div>
 
       <div class="player-actions">
@@ -2382,6 +2394,74 @@ selectedPosition = position;
 
 document.getElementById(
 "positionModal"
+).style.display = "none";
+
+}
+</script>
+<div id="overallModal" class="modal-overlay">
+
+<div class="modal-box">
+
+<h2>⭐ Escolher overall</h2>
+
+<div
+style="
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px;
+margin-top:15px;
+">
+
+<button onclick="selectOverall(0)">0</button>
+<button onclick="selectOverall(1)">1</button>
+<button onclick="selectOverall(2)">2</button>
+<button onclick="selectOverall(3)">3</button>
+<button onclick="selectOverall(4)">4</button>
+<button onclick="selectOverall(5)">5</button>
+<button onclick="selectOverall(6)">6</button>
+<button onclick="selectOverall(7)">7</button>
+<button onclick="selectOverall(8)">8</button>
+<button onclick="selectOverall(9)">9</button>
+<button onclick="selectOverall(10)">10</button>
+
+</div>
+
+<button
+style="margin-top:15px;"
+onclick="closeOverallModal()">
+
+Cancelar
+
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+function openOverallModal(){
+
+document.getElementById(
+"overallModal"
+).style.display = "flex";
+
+}
+
+function closeOverallModal(){
+
+document.getElementById(
+"overallModal"
+).style.display = "none";
+
+}
+
+function selectOverall(overall){
+
+selectedOverall = overall;
+
+document.getElementById(
+"overallModal"
 ).style.display = "none";
 
 }
