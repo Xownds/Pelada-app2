@@ -369,8 +369,8 @@ all .45s cubic-bezier(.2,.8,.2,1);z-index:10;
   will-change:
 transform;
   position:absolute;
- width:125px;
-height:125px;
+ width:145px;
+height:145px;
   border-radius:50%;
   border:2px dashed rgba(255,255,255,.3);
   background:rgba(255,255,255,.08);
@@ -411,8 +411,8 @@ box-shadow:
   transition:
 transform .25s,
 box-shadow .25s;
-  width:58px;
-height:64px;
+  width:72px;
+height:82px;
 
   background:
   linear-gradient(
@@ -431,7 +431,7 @@ border-radius:
 
   color:white;
   font-weight:900;
-  font-size:22px;
+  font-size:28px;
 
   box-shadow:
   0 4px 15px rgba(0,0,0,.45);
@@ -494,12 +494,7 @@ letter-spacing:.5px;
 
 color:#ffffff;
 }
- font-weight:700;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-  text-shadow:0 2px 5px rgba(0,0,0,.5);
-}
+
   
 .top-buttons{
   display:grid;
@@ -670,8 +665,7 @@ justify-content:center;
 gap:5px;
 
 }
-
-}
+  
 </style>
 </head>
 
@@ -1600,10 +1594,10 @@ ${player.number}
 <div class="player-name">
   ${player.captain ? "🧠 " : ""}
   ${player.name}
-  <br>
-  <div class="overall-badge">
-⭐ ${player.overall}
 </div>
+
+<div class="overall-badge">
+⭐ ${player.overall}
 </div>
 `;
 
@@ -1930,13 +1924,25 @@ clearTeams();
 
 const available = [...players];
 
-available.sort(
-(a,b) => b.overall - a.overall
-);
+const positions = [
+"Goleiro",
+"Zagueiro",
+"Lateral",
+"Volante",
+"Meia",
+"Atacante"
+];
+
+positions.forEach(position => {
+
+const positionPlayers =
+available
+.filter(p => p.position === position)
+.sort((a,b) => b.overall - a.overall);
 
 let teamIndex = 0;
 
-available.forEach(player => {
+positionPlayers.forEach(player => {
 
 const team =
 "team" + (teamIndex + 1);
@@ -1948,8 +1954,14 @@ const roles =
 formationRoles[formation];
 
 const emptyIndex =
-teamsByMode[gameMode][team]
-.findIndex(p => p === null);
+roles.findIndex((role, i) => {
+
+return (
+role === position &&
+teamsByMode[gameMode][team][i] === null
+);
+
+});
 
 if(emptyIndex !== -1){
 
@@ -1958,7 +1970,20 @@ player;
 
 }else{
 
+const anyEmpty =
+teamsByMode[gameMode][team]
+.findIndex(p => p === null);
+
+if(anyEmpty !== -1){
+
+teamsByMode[gameMode][team][anyEmpty] =
+player;
+
+}else{
+
 reserves.push(player);
+
+}
 
 }
 
@@ -1972,6 +1997,8 @@ teamIndex = 0;
 
 });
 
+});
+
 renderTeams();
 
 renderReserves();
@@ -1979,7 +2006,7 @@ renderReserves();
 saveTeams();
 
 showWarning(
-"⚽ Times balanceados por overall"
+"⚽ Times balanceados por overall e posição"
 );
 
 }
@@ -2193,29 +2220,29 @@ document
 let editingPlayerId = null;
 
 function openEditModal(id){
+
 const player =
 players.find(p => p.id === id);
 
 editingPlayerId = id;
 
-document
-.getElementById("editName")
-.value = player.name;
+document.getElementById("editName").value =
+player.name;
 
-document
-.getElementById("editNumber")
-.value = player.number;
+document.getElementById("editNumber").value =
+player.number;
 
-document
-.getElementById("editOverall")
-.value = player.overall;
+document.getElementById("editOverall").value =
+player.overall;
 
-document
-.getElementById("editModal")
-.style.display = "flex";
+document.getElementById("editPosition").value =
+player.position;
+
+document.getElementById("editModal").style.display =
+"flex";
 
 }
-
+  
 function closeEditModal(){
 
 document
@@ -2225,26 +2252,24 @@ document
 }
 
 function saveEditPlayer(){
+
 const player =
 players.find(
 p => p.id === editingPlayerId
 );
 
 player.name =
-document
-.getElementById("editName")
-.value;
+document.getElementById("editName").value;
 
 player.number =
-document
-.getElementById("editNumber")
-.value;
+document.getElementById("editNumber").value;
+
+player.position =
+document.getElementById("editPosition").value;
 
 player.overall =
 Number(
-document
-.getElementById("editOverall")
-.value
+document.getElementById("editOverall").value
 );
 
 savePlayers();
@@ -2343,6 +2368,19 @@ min="0"
 max="10"
 style="margin-top:10px;">
 
+<select
+id="editPosition"
+style="margin-top:10px;">
+
+<option>Goleiro</option>
+<option>Zagueiro</option>
+<option>Lateral</option>
+<option>Volante</option>
+<option>Meia</option>
+<option>Atacante</option>
+
+</select>
+  
 <div
 class="modal-buttons"
 style="margin-top:20px;">
