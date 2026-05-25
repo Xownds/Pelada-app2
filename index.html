@@ -607,6 +607,33 @@ border:2px solid #32ff7e;
 margin-top:5px;
 
 }
+.overall-badge{
+
+margin-top:2px;
+
+padding:2px 6px;
+
+border-radius:8px;
+
+background:
+linear-gradient(
+135deg,
+#ffd32a,
+#ffb300
+);
+
+color:#111;
+
+font-size:10px;
+
+font-weight:900;
+
+box-shadow:
+0 0 10px rgba(255,211,42,.45);
+
+display:inline-block;
+
+}
 </style>
 </head>
 
@@ -1200,8 +1227,8 @@ let currentFormation = {
   team3:"433",
   team4:"433"
 };
-let selectedPosition = "Goleiro";
-let selectedOverall = 5;
+let selectedPosition = "";
+let selectedOverall = null;
 let currentSlot = null;
 let gameMode = "football";
 let totalTeams = 2;
@@ -1344,7 +1371,12 @@ function addPlayer(){
  const position = selectedPosition;
  const overall = selectedOverall;
 
-  if(!name || !number){
+  if(
+!name ||
+!number ||
+selectedPosition === "" ||
+selectedOverall === null
+){
     showWarning("Preencha os campos.");
     return;
   }
@@ -1363,6 +1395,9 @@ overall:overall
 
   document.getElementById("name").value = "";
   document.getElementById("number").value = "";
+
+  selectedPosition = "";
+selectedOverall = null;
 }
 
 function renderPlayers(){
@@ -1388,8 +1423,11 @@ ${player.name}
         <span>Camisa ${player.number}</span>
         <span>
 ${player.position}
-• OVR ${player.overall}
 </span>
+
+<div class="overall-badge">
+⭐ ${player.overall}
+</div>
       </div>
 
       <div class="player-actions">
@@ -1525,7 +1563,9 @@ ${player.number}
   ${player.captain ? "🧠 " : ""}
   ${player.name}
   <br>
-  ⭐ ${player.overall}
+  <div class="overall-badge">
+⭐ ${player.overall}
+</div>
 </div>
 `;
 
@@ -1578,9 +1618,12 @@ Camisa ${player.number}
 </span>
 
 <span>
-${player.position} • OVR ${player.overall}
+${player.position}
 </span>
 
+<div class="overall-badge">
+⭐ ${player.overall}
+</div>
 </div>
 
 <div class="player-actions">
@@ -1821,14 +1864,15 @@ function shuffle(array){
 }
 
 function drawTeams(){
+
 let playersPerTeam = 11;
 
 if(gameMode === "society"){
-  playersPerTeam = 7;
+playersPerTeam = 7;
 }
 
 if(gameMode === "futsal"){
-  playersPerTeam = 5;
+playersPerTeam = 5;
 }
 
 let minPlayers =
@@ -1843,67 +1887,64 @@ showWarning(
 return;
 
 }
-  clearTeams();
 
-  const available = [...players];
+clearTeams();
 
-  shuffle(available);
+const available = [...players];
 
-  const teams = [];
+available.sort(
+(a,b) => b.overall - a.overall
+);
 
-for(let i = 1; i <= totalTeams; i++){
+let teamIndex = 0;
 
-  teams.push("team" + i);
+available.forEach(player => {
 
-}
+const team =
+"team" + (teamIndex + 1);
 
-teams.forEach(team => {
+const formation =
+currentFormation[team];
 
-    const formation =
-    currentFormation[team];
+const roles =
+formationRoles[formation];
 
-    const roles =
-    formationRoles[formation];
+const emptyIndex =
+teamsByMode[gameMode][team]
+.findIndex(p => p === null);
 
-    for(let i = 0; i < roles.length; i++){
+if(emptyIndex !== -1){
 
-      const role = roles[i];
+teamsByMode[gameMode][team][emptyIndex] =
+player;
 
-      const playerIndex =
-      available.findIndex(
-        p => p.position === role
-      );
+}else{
 
-    if(playerIndex !== -1){
-
-  teamsByMode[gameMode][team][i] =
-  available[playerIndex];
-
-  available.splice(playerIndex,1);
-
-}else if(available.length > 0){
-
-  teamsByMode[gameMode][team][i] =
-  available[0];
-
-  available.splice(0,1);
+reserves.push(player);
 
 }
 
-    }
+teamIndex++;
 
-  });
+if(teamIndex >= totalTeams){
 
+teamIndex = 0;
 
-reserves = available;
+}
+
+});
 
 renderTeams();
-saveTeams();
+
 renderReserves();
-showWarning("⚽ Times sorteados");
+
+saveTeams();
+
+showWarning(
+"⚽ Times balanceados por overall"
+);
 
 }
-
 
 function changeFormation(team, formation){
 
