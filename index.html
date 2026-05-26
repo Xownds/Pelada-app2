@@ -1941,7 +1941,7 @@ if(gameMode === "futsal"){
 playersPerTeam = 5;
 }
 
-let minPlayers =
+const minPlayers =
 playersPerTeam * totalTeams;
 
 if(players.length < minPlayers){
@@ -1951,35 +1951,28 @@ showWarning(
 );
 
 return;
-
 }
 
 clearTeams();
 
-const available = [...players];
+const usedPlayers = [];
 
-const positions = [
-"Goleiro",
-"Zagueiro",
-"Lateral",
-"Volante",
-"Meia",
-"Atacante"
-];
-
-positions.forEach(position => {
-
-const positionPlayers =
-available
-.filter(p => p.position === position)
+const allPlayers =
+[...players]
 .sort((a,b) => b.overall - a.overall);
 
-let teamIndex = 0;
+const goalkeepers =
+allPlayers.filter(p => p.position === "Goleiro");
 
-positionPlayers.forEach(player => {
+const linePlayers =
+allPlayers.filter(p => p.position !== "Goleiro");
+
+goalkeepers.sort((a,b) => b.overall - a.overall);
+
+for(let i = 0; i < totalTeams; i++){
 
 const team =
-"team" + (teamIndex + 1);
+"team" + (i + 1);
 
 const formation =
 currentFormation[team];
@@ -1987,64 +1980,101 @@ currentFormation[team];
 const roles =
 formationRoles[formation];
 
-const emptyIndex =
-roles.findIndex((role, i) => {
+const gkIndex =
+roles.findIndex(r => r === "Goleiro");
+
+if(goalkeepers[i]){
+
+teamsByMode[gameMode][team][gkIndex] =
+goalkeepers[i];
+
+usedPlayers.push(goalkeepers[i].id);
+
+}
+
+}
+shuffle(linePlayers);
+linePlayers.forEach((player,index)=>{
+
+let bestTeam = null;
+let lowestOverall = Infinity;
+
+for(let i = 1; i <= totalTeams; i++){
+
+const teamName = "team"+i;
+
+const team =
+teamsByMode[gameMode][teamName];
+
+const filledSlots =
+team.filter(Boolean).length;
+
+if(filledSlots >= playersPerTeam){
+continue;
+}
+
+const currentOverall =
+team
+.filter(Boolean)
+.reduce((sum,p)=>sum+p.overall,0);
+
+if(currentOverall < lowestOverall){
+
+lowestOverall = currentOverall;
+
+bestTeam = teamName;
+
+}
+
+}
+if(!bestTeam){
+return;
+}
+const formation =
+currentFormation[bestTeam];
+
+const roles =
+formationRoles[formation];
+
+let slotIndex =
+roles.findIndex((role,i)=>{
 
 return (
-role === position &&
-teamsByMode[gameMode][team][i] === null
+role === player.position &&
+teamsByMode[gameMode][bestTeam][i] == null
 );
 
 });
 
-if(emptyIndex !== -1){
+if(slotIndex === -1){
 
-teamsByMode[gameMode][team][emptyIndex] =
-player;
-
-}else{
-
-let anyEmpty = -1;
-
-if(position !== "Goleiro"){
-
-anyEmpty =
-teamsByMode[gameMode][team]
-.findIndex((p,i) => {
+slotIndex =
+roles.findIndex((role,i)=>{
 
 return (
-p === null &&
-formationRoles[formation][i] !== "Goleiro"
+role !== "Goleiro" &&
+teamsByMode[gameMode][bestTeam][i] == null
 );
 
 });
 
 }
 
-if(anyEmpty !== -1){
+if(slotIndex !== -1){
 
-teamsByMode[gameMode][team][anyEmpty] =
+teamsByMode[gameMode][bestTeam][slotIndex] =
 player;
 
-}else{
-
-reserves.push(player);
-
-}
-
-}
-
-teamIndex++;
-
-if(teamIndex >= totalTeams){
-
-teamIndex = 0;
+usedPlayers.push(player.id);
 
 }
 
 });
 
-});
+reserves =
+players.filter(
+p => !usedPlayers.includes(p.id)
+);
 
 renderTeams();
 
@@ -2053,7 +2083,7 @@ renderReserves();
 saveTeams();
 
 showWarning(
-"⚽ Times balanceados por overall e posição"
+"⚽ Times sorteados com sucesso"
 );
 
 }
@@ -2206,6 +2236,10 @@ function setTeamsAmount(amount){
   showWarning(
 `${amount} times ativados`
 );
+  
+saveTeams();
+
+renderTeams();
 }
  function resetApp(){
 
