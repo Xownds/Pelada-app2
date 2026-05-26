@@ -1895,28 +1895,34 @@ window.onclick = function(e){
 
 }
 
-function clearTeams(){
+function clearTeams(resetReserves = true){
 
-  for(let i = 1; i <= 4; i++){
+for(let i = 1; i <= 4; i++){
 
-    const team =
-    "team" + i;
+const team =
+"team" + i;
 
-    const totalPlayers =
-    formations[currentFormation[team]].length;
+const totalPlayers =
+formations[currentFormation[team]].length;
 
-    teamsByMode[gameMode][team] =
-    Array(totalPlayers).fill(null);
-
-  }
-reserves = [];
-
-renderReserves();
-  renderTeams();
-  saveTeams();
+teamsByMode[gameMode][team] =
+Array(totalPlayers).fill(null);
 
 }
 
+if(resetReserves){
+
+reserves = [];
+
+renderReserves();
+
+}
+
+renderTeams();
+
+saveTeams();
+
+}
 function shuffle(array){
 
   for(let i = array.length - 1; i > 0; i--){
@@ -1953,7 +1959,7 @@ showWarning(
 return;
 }
 
-clearTeams();
+clearTeams(false);
 
 const usedPlayers = [];
 
@@ -1993,8 +1999,10 @@ usedPlayers.push(goalkeepers[i].id);
 }
 
 }
-shuffle(linePlayers);
-linePlayers.forEach((player,index)=>{
+
+linePlayers
+.sort((a,b) => b.overall - a.overall)
+.forEach((player,index)=>{
 
 let bestTeam = null;
 let lowestOverall = Infinity;
