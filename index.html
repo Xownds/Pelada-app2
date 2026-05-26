@@ -756,8 +756,9 @@ Escolher overall
   <div class="box bottom"></div>
 
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-  <h2>Time 1</h2>
-  
+  <h2 id="team1Title">
+Time 1 ⭐ 0
+</h2>
 <button
 id="formationBtn1"
 class="main-btn"
@@ -780,7 +781,9 @@ onclick="openFormationModal(1)">
   <div class="box bottom"></div>
 
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-  <h2>Time 2</h2>
+  <h2 id="team2Title">
+Time 2 ⭐ 0
+</h2>
  
 <button
 id="formationBtn2"
@@ -809,7 +812,9 @@ justify-content:space-between;
 align-items:center;
 margin-bottom:10px;">
 
-<h2>Time 3</h2>
+<h2 id="team3Title">
+Time 3 ⭐ 0
+</h2>
 <button
 id="formationBtn3"
 class="main-btn"
@@ -841,7 +846,9 @@ justify-content:space-between;
 align-items:center;
 margin-bottom:10px;">
 
-<h2>Time 4</h2>
+<h2 id="team4Title">
+Time 4 ⭐ 0
+</h2>
 
 <button
 id="formationBtn4"
@@ -1524,7 +1531,34 @@ function deletePlayer(id){
   renderTeams();
 
 }
+function updateTeamStrength(){
 
+for(let i = 1; i <= totalTeams; i++){
+
+const team =
+teamsByMode[gameMode]["team"+i]
+.filter(Boolean);
+
+let average = 0;
+
+if(team.length > 0){
+
+average =
+team.reduce(
+(sum,p) => sum + p.overall,
+0
+) / team.length;
+
+}
+
+document.getElementById(
+"team"+i+"Title"
+).innerText =
+`Time ${i} ⭐ ${average.toFixed(1)}`;
+
+}
+
+}
 function renderTeams(){
 
   renderSingleTeam("team1");
@@ -1532,7 +1566,7 @@ function renderTeams(){
 
   renderSingleTeam("team3");
   renderSingleTeam("team4");
-
+  updateTeamStrength();
 }
 
 
@@ -1970,9 +2004,22 @@ player;
 
 }else{
 
-const anyEmpty =
+let anyEmpty = -1;
+
+if(position !== "Goleiro"){
+
+anyEmpty =
 teamsByMode[gameMode][team]
-.findIndex(p => p === null);
+.findIndex((p,i) => {
+
+return (
+p === null &&
+formationRoles[formation][i] !== "Goleiro"
+);
+
+});
+
+}
 
 if(anyEmpty !== -1){
 
