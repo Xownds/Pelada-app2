@@ -1272,6 +1272,7 @@ let currentSlot = null;
 let gameMode = "football";
 let totalTeams = 2;
 let reserves = [];
+let lastTeams = null;
   const teamColors = {
 
   team1:{
@@ -1957,11 +1958,52 @@ return;
 clearTeams(false);
 
 const usedPlayers = [];
+let allPlayers = [...players];
 
-const allPlayers =
-[...players]
-.sort((a,b) => b.overall - a.overall);
+if(lastTeams){
 
+const changedPlayers = [];
+
+for(let i = 1; i <= totalTeams; i++){
+
+const oldTeam =
+lastTeams["team"+i]
+.filter(Boolean);
+
+oldTeam.forEach(player => {
+
+if(Math.random() < 0.5){
+
+changedPlayers.push(player.id);
+
+}
+
+});
+
+}
+
+allPlayers.sort((a,b)=>{
+
+const aChanged =
+changedPlayers.includes(a.id);
+
+const bChanged =
+changedPlayers.includes(b.id);
+
+if(aChanged && !bChanged) return -1;
+if(!aChanged && bChanged) return 1;
+
+return b.overall - a.overall;
+
+});
+
+}else{
+
+allPlayers.sort(
+(a,b)=> b.overall - a.overall
+);
+
+}
 const goalkeepers =
 allPlayers.filter(p => p.position === "Goleiro");
 
@@ -2084,6 +2126,10 @@ renderTeams();
 renderReserves();
 
 saveTeams();
+lastTeams = JSON.parse(
+JSON.stringify(
+teamsByMode[gameMode]
+));
 
 showWarning(
 "⚽ Times sorteados com sucesso"
