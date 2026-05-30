@@ -727,8 +727,8 @@ Escolher overall
 <div class="top-buttons">
 <button onclick="drawTeams()">🎲 Sortear Times</button>
 <button onclick="clearTeams()">🧹 Limpar Times</button>
-</div>
-
+<button onclick="shareWhatsApp()">📱 WhatsApp</button>
+</div>  
 </div>
 <div class="tab-content" id="playersTab">
   
@@ -2421,6 +2421,46 @@ renderReserves();
 closeEditModal();
 
 }
+function shareWhatsApp(){
+
+let texto = "⚽ TIMES DA PELADA\n\n";
+
+for(let i = 1; i <= totalTeams; i++){
+
+texto += `🏆 TIME ${i}\n`;
+
+teamsByMode[gameMode]["team"+i]
+.filter(Boolean)
+.forEach(player => {
+
+texto += `• ${player.name} (${player.position})\n`;
+
+});
+
+texto += "\n";
+
+}
+
+if(reserves.length){
+
+texto += "🪑 RESERVAS\n";
+
+reserves.forEach(player => {
+
+texto += `• ${player.name}\n`;
+
+});
+
+}
+
+const url =
+`https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
+
+window.location.href = url;
+  
+}
+
+
 showTab("teams");
 
 renderPlayers();
