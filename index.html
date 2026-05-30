@@ -2454,9 +2454,9 @@ texto += `• ${player.name}\n`;
 }
 
 const url =
-`https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
+`https://wa.me/?text=${encodeURIComponent(texto)}`;
 
-window.location.href = url;
+window.open(url, "_blank");
   
 }
 
