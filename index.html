@@ -394,8 +394,6 @@ box-shadow:
 }
 
 .filled{
-  box-shadow:0 0 15px rgba(50,255,126,.6);
-  background:#32ff7e;
   color:black;
   border:none;
   font-weight:bold;
@@ -1611,6 +1609,15 @@ slot.style.animation =
 },450);
     const colors =
 teamColors[teamName];
+slot.style.background =
+`linear-gradient(
+180deg,
+${colors.primary},
+${colors.secondary}
+)`;
+
+slot.style.boxShadow =
+`0 0 18px ${colors.primary}`;
 
 slot.innerHTML = `
 <div
