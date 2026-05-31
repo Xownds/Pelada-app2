@@ -685,7 +685,11 @@ gap:5px;
 <button onclick="showTab('players')">
 👥 Jogadores
 </button>
-
+  
+<button onclick="showTab('related')">
+✅ Relacionados
+</button>
+  
 <button onclick="showTab('modes')">
 🎮 Modos
 </button>
@@ -731,17 +735,79 @@ Escolher overall
 </div>  
 </div>
 <div class="tab-content" id="playersTab">
-  
+
 <div class="card">
+
+<div style="
+display:flex;
+gap:10px;
+align-items:center;
+justify-content:space-between;
+margin-bottom:10px;
+">
 
 <h2>Jogadores</h2>
 
+<div>
 
+<button
+class="small-btn"
+onclick="relateAll()">
+
+✅ Todos
+
+</button>
+
+<button
+class="small-btn delete"
+onclick="unrelateAll()">
+
+❌ Nenhum
+
+</button>
+
+</div>
+
+</div>
+
+<select
+id="playerFilter"
+onchange="changeFilter(this.value)"
+style="margin-bottom:10px;">
+
+<option value="all">Todos</option>
+<option value="related">Relacionados</option>
+<option value="unrelated">Não relacionados</option>
+
+<option value="Goleiro">Goleiros</option>
+<option value="Zagueiro">Zagueiros</option>
+<option value="Lateral">Laterais</option>
+<option value="Volante">Volantes</option>
+<option value="Meia">Meias</option>
+<option value="Atacante">Atacantes</option>
+
+</select>
 <div class="players-list" id="playersList"></div>
 
 </div>
   
  </div>
+<div class="tab-content"
+id="relatedTab"
+style="display:none">
+
+<div class="card">
+
+<h2>✅ Relacionados</h2>
+
+<div
+class="players-list"
+id="relatedList">
+</div>
+
+</div>
+
+</div>
 <div class="tab-content" id="teamsTab">
 
 <div class="field-container">
@@ -981,7 +1047,15 @@ Fechar
 const maxPlayers = 50;
 
 let players = JSON.parse(localStorage.getItem("players")) || [];
+players.forEach(player => {
 
+if(player.selectedForDraw === undefined){
+
+player.selectedForDraw = false;
+
+}
+
+});
 let teamsByMode = {
 
   football:{
@@ -1272,6 +1346,7 @@ let gameMode = "football";
 let totalTeams = 2;
 let reserves = [];
 let lastTeams = null;
+  let currentFilter = "all";
   const teamColors = {
 
   team1:{
@@ -1392,8 +1467,13 @@ function savePlayers(){
 }
 
 function updateCounter(){
-  document.getElementById("counter").innerText =
- `${players.length} / ${maxPlayers} jogadores`
+  const related =
+players.filter(
+p => p.selectedForDraw
+).length;
+
+document.getElementById("counter").innerText =
+`${players.length} jogadores | ${related} relacionados`;
 }
 
 function addPlayer(){
@@ -1426,7 +1506,8 @@ players.push({
   number,
   position,
   captain:false,
-overall:overall
+  overall:overall,
+  selectedForDraw:false
 });
 
   savePlayers();
@@ -1447,7 +1528,25 @@ function renderPlayers(){
 
   list.innerHTML = "";
 
-  players.forEach(player => {
+  players
+.filter(player => {
+
+if(currentFilter === "all"){
+return true;
+}
+
+if(currentFilter === "related"){
+return player.selectedForDraw;
+}
+
+if(currentFilter === "unrelated"){
+return !player.selectedForDraw;
+}
+
+return player.position === currentFilter;
+
+})
+.forEach(player => {
 
     const div = document.createElement("div");
 
@@ -1456,6 +1555,7 @@ function renderPlayers(){
     div.innerHTML = `
       <div class="player-info">
        <strong>
+${player.selectedForDraw ? "✅ " : "❌ "}
 ${player.captain ? "🧠 " : ""}
 ${player.name}
 </strong>
@@ -1470,6 +1570,13 @@ ${player.position}
       </div>
 
       <div class="player-actions">
+
+<button class="small-btn"
+onclick="toggleRelated(${player.id})">
+
+${player.selectedForDraw ? "✅" : "❌"}
+
+</button>
 
 <button class="small-btn"
 onclick="toggleCaptain(${player.id})">
@@ -1492,7 +1599,58 @@ Editar
 
     list.appendChild(div);
 
-  });
+});
+
+renderRelated();
+}
+function renderRelated(){
+
+const list =
+document.getElementById(
+"relatedList"
+);
+
+if(!list) return;
+
+list.innerHTML = "";
+
+players
+.filter(
+p => p.selectedForDraw
+)
+.forEach(player => {
+
+const div =
+document.createElement("div");
+
+div.className =
+"player-card";
+
+div.innerHTML = `
+<div class="player-info">
+
+<strong>
+${player.name}
+</strong>
+
+<span>
+Camisa ${player.number}
+</span>
+
+<span>
+${player.position}
+</span>
+
+<div class="overall-badge">
+⭐ ${player.overall}
+</div>
+
+</div>
+`;
+
+list.appendChild(div);
+
+});
 
 }
 
@@ -1748,7 +1906,7 @@ usedIds
 .map(p => p.id);
 
   players.forEach(player => {
-
+  if(!player.selectedForDraw) return;
     if(finalUsedIds.includes(player.id)) return;
     if(
   reserves.some(
@@ -1954,10 +2112,15 @@ playersPerTeam = 5;
 const minPlayers =
 playersPerTeam * totalTeams;
 
-if(players.length < minPlayers){
+let allPlayers =
+players.filter(
+p => p.selectedForDraw
+);
+
+if(allPlayers.length < minPlayers){
 
 showWarning(
-`Você precisa de no mínimo ${minPlayers} jogadores`
+`Você precisa de no mínimo ${minPlayers} jogadores relacionados`
 );
 
 return;
@@ -1966,7 +2129,6 @@ return;
 clearTeams(false);
 
 const usedPlayers = [];
-let allPlayers = [...players];
 
 if(lastTeams){
 
@@ -2125,7 +2287,7 @@ usedPlayers.push(player.id);
 });
 
 reserves =
-players.filter(
+allPlayers.filter(
 p => !usedPlayers.includes(p.id)
 );
 
@@ -2160,6 +2322,101 @@ document.getElementById(
   renderSingleTeam(team);
 
 }
+function toggleRelated(id){
+
+const player =
+players.find(p => p.id === id);
+if(
+player.selectedForDraw &&
+!confirm(
+`Remover ${player.name} dos relacionados?`
+)
+){
+return;
+}
+player.selectedForDraw =
+!player.selectedForDraw;
+
+if(!player.selectedForDraw){
+
+for(let mode in teamsByMode){
+
+for(let team in teamsByMode[mode]){
+
+teamsByMode[mode][team] =
+teamsByMode[mode][team].map(p => {
+
+if(p && p.id === id){
+
+return null;
+
+}
+
+return p;
+
+});
+
+}
+
+}
+
+reserves =
+reserves.filter(
+p => p.id !== id
+);
+
+saveTeams();
+
+renderTeams();
+
+renderReserves();
+
+}
+
+savePlayers();
+
+renderPlayers();
+
+}
+function relateAll(){
+
+players.forEach(player => {
+
+player.selectedForDraw = true;
+
+});
+
+savePlayers();
+
+renderPlayers();
+  
+renderRelated();
+}
+
+function unrelateAll(){
+
+players.forEach(player => {
+
+player.selectedForDraw = false;
+
+});
+
+clearTeams();
+
+reserves = [];
+
+savePlayers();
+
+saveTeams();
+
+renderPlayers();
+
+renderTeams();
+
+renderReserves();
+  
+renderRelated();
+}
 function toggleCaptain(id){
 
   players.forEach(p => p.captain = false);
@@ -2174,11 +2431,21 @@ function toggleCaptain(id){
   renderTeams();
 
 }
+function changeFilter(filter){
+
+currentFilter = filter;
+
+renderPlayers();
+
+}
 function showTab(tab){
 
   document.getElementById(
     "teamsTab"
   ).style.display = "none";
+  document.getElementById(
+"relatedTab"
+).style.display = "none";
 
   document.getElementById(
     "playersTab"
@@ -2429,11 +2696,19 @@ for(let i = 1; i <= totalTeams; i++){
 
 texto += `🏆 TIME ${i}\n`;
 
-teamsByMode[gameMode]["team"+i]
-.filter(Boolean)
-.forEach(player => {
+const team =
+teamsByMode[gameMode]["team"+i];
 
-texto += `• ${player.name} (${player.position})\n`;
+const roles =
+formationRoles[
+currentFormation["team"+i]
+];
+
+team.forEach((player,index) => {
+
+if(!player) return;
+
+texto += `• ${player.number} - ${player.name} (${player.position})\n`;
 
 });
 
