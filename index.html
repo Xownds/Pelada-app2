@@ -1347,6 +1347,7 @@ let totalTeams = 2;
 let reserves = [];
 let lastTeams = null;
   let currentFilter = "all";
+  let playerToUnrelate = null;
   const teamColors = {
 
   team1:{
@@ -1581,7 +1582,7 @@ onclick="relatePlayer(${player.id})">
 
 <button
 class="small-btn delete"
-onclick="unrelatePlayer(${player.id})">
+onclick="askUnrelate(${player.id})">
 
 ❌
 
@@ -2349,19 +2350,96 @@ function unrelatePlayer(id){
 const player =
 players.find(p => p.id === id);
 
-if(
-!confirm(
-`Remover ${player.name} dos relacionados?`
-)
-){
-return;
+player.selectedForDraw = false;
+
+for(let mode in teamsByMode){
+
+for(let team in teamsByMode[mode]){
+
+teamsByMode[mode][team] =
+teamsByMode[mode][team].map(p => {
+
+if(p && p.id === id){
+return null;
 }
 
-player.selectedForDraw = false;
+return p;
+
+});
+
+}
+
+}
+
+reserves =
+reserves.filter(
+p => p.id !== id
+);
 
 savePlayers();
 
+saveTeams();
+
 renderPlayers();
+
+renderTeams();
+
+renderReserves();
+
+}
+function askUnrelate(id){
+
+const player =
+players.find(
+p => p.id === id
+);
+
+playerToUnrelate = id;
+
+document
+.getElementById("warningText")
+.innerHTML =
+`<strong>${player.name}</strong><br><br>será removido dos relacionados.`;
+
+document
+.getElementById(
+"warningCancelBtn"
+).style.display = "block";
+
+document
+.getElementById(
+"warningConfirmBtn"
+).innerText = "Remover";
+
+document
+.getElementById(
+"warningConfirmBtn"
+).onclick =
+confirmUnrelate;
+
+document
+.getElementById(
+"warningModal"
+).style.display = "flex";
+
+}
+ffunction confirmUnrelate(){
+
+if(!playerToUnrelate){
+return;
+}
+
+unrelatePlayer(
+playerToUnrelate
+);
+
+playerToUnrelate = null;
+
+closeWarningModal();
+
+showWarning(
+"✅ Jogador removido dos relacionados"
+);
 
 }
 function toggleRelated(id){
@@ -2652,8 +2730,25 @@ document
 .innerText = text;
 
 document
-.getElementById("warningModal")
-.style.display = "flex";
+.getElementById(
+"warningCancelBtn"
+).style.display = "none";
+
+document
+.getElementById(
+"warningConfirmBtn"
+).innerText = "OK";
+
+document
+.getElementById(
+"warningConfirmBtn"
+).onclick =
+closeWarningModal;
+
+document
+.getElementById(
+"warningModal"
+).style.display = "flex";
 
 }
 
@@ -2827,6 +2922,17 @@ Mensagem
 <div class="modal-buttons">
 
 <button
+id="warningCancelBtn"
+class="cancel-btn"
+style="display:none;"
+onclick="closeWarningModal()">
+
+Cancelar
+
+</button>
+
+<button
+id="warningConfirmBtn"
 class="confirm-btn"
 onclick="closeWarningModal()">
 
