@@ -1571,10 +1571,19 @@ ${player.position}
 
       <div class="player-actions">
 
-<button class="small-btn"
-onclick="toggleRelated(${player.id})">
+<button
+class="small-btn"
+onclick="relatePlayer(${player.id})">
 
-${player.selectedForDraw ? "✅" : "❌"}
+✅
+
+</button>
+
+<button
+class="small-btn delete"
+onclick="unrelatePlayer(${player.id})">
+
+❌
 
 </button>
 
@@ -2320,6 +2329,39 @@ document.getElementById(
   saveTeams();
 
   renderSingleTeam(team);
+
+}
+function relatePlayer(id){
+
+const player =
+players.find(p => p.id === id);
+
+player.selectedForDraw = true;
+
+savePlayers();
+
+renderPlayers();
+
+}
+
+function unrelatePlayer(id){
+
+const player =
+players.find(p => p.id === id);
+
+if(
+!confirm(
+`Remover ${player.name} dos relacionados?`
+)
+){
+return;
+}
+
+player.selectedForDraw = false;
+
+savePlayers();
+
+renderPlayers();
 
 }
 function toggleRelated(id){
